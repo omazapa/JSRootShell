@@ -20,12 +20,9 @@ var _down = 40;
 function JSRootPrompt() {
 	// line number in prompt
 	this.number = 0;
-	this.print = function() {
-		document.write(this.getPrompt());
-	};
 	this.getPrompt = function() {
 		var prePrompt = "root [" + this.number + "] ";
-		var inputPromptId = " id=\"JSRootPrompt" + this.number.toString() + "\" ";
+		var inputPromptId = " class=\"JSRootPrompt\" id=\"JSRootPrompt" + this.number.toString() + "\" ";
 		var inputPromptEvents = " onkeypress=\"parseInputEvent()\"  onkeyup=\"callHistoryUp()\" onkeydown=\"callHistoryDown()\" ";
 		var inputPromptStyle = " style=\"border-style:none;\" ";
 		var inputPromptFull = prePrompt + "<input type=\"text\"" + inputPromptId + inputPromptEvents + inputPromptStyle + ">";
@@ -93,13 +90,14 @@ function parseInputEvent() {
 		RootPrompt.history.push(line.value);
 
 		RootPrompt.number++;
-		document.write("<br>");
-		RootPrompt.print();
+		document.getElementById("JSRootShell").innerHTML+="<br>"+RootPrompt.getPrompt();
+
 		RootPrompt.history_position = 0;
 	}
 
 }
 
 function InitShell() {
-	document.write(RootPrompt.getPrompt());
+	document.getElementById("JSRootShell").innerHTML+=RootPrompt.getPrompt();
+//	document.write(RootPrompt.getPrompt());
 }
