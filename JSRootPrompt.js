@@ -51,12 +51,13 @@ function JSRootPrompt(number,shell) {
 
 	var promptInput = document.createElement('textarea');
 	promptInput.setAttribute('value','');
+	promptInput.select();
 	promptInput.setAttribute('class','JSRootPrompt');
     var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;';
 	promptInput.setAttribute('style',style);
 	promptInput.setAttribute("autofocus","autofocus");
 	promptInput.setAttribute('id', "JSRootPrompt" + number.toString());
-	promptInput.addEventListener('keypress', this.keypressEvent, true);
+	promptInput.addEventListener('keypress', this.keypressEvent, false);
 	prompt.appendChild(promptInput);
 
     function adjustPrompt () {
