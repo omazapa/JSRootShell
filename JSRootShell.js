@@ -20,7 +20,7 @@ var _down = 40;
 
 function JSRootShell(id,style) {
 	id = id || "JSRootShell";
-    style = style || "border-style:none;color:#000000;background:#DCDCDC;height:50%;width: 50%;";
+    style = style || "border-style:none;color:#000000;background:#DCDCDC;height:50%;width: 50%;resize: both;";
     number = 0;
 	this.updateStyle = function(newstyle)
 	{
@@ -43,7 +43,7 @@ function JSRootShell(id,style) {
     	number++;
     	this.currentPrompt.setReadOnly();
 		this.currentPrompt = new JSRootPrompt(number,this);
-//		this.currentPrompt.setFocus();
+		this.shelldiv.appendChild(document.createElement('br'));
 		this.shelldiv.appendChild(this.currentPrompt.getElement());
     };
 

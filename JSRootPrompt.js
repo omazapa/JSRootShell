@@ -22,6 +22,9 @@ function JSRootPrompt(number,shell) {
 	number = number || "0";
 	number = number.toString();
 	this.keypressEvent = function(){
+	//adjust the promot in text area with every event
+      		adjustPrompt();
+
 			var key;
 			if (window.event) {
 				key = event.keyCode;
@@ -37,20 +40,29 @@ function JSRootPrompt(number,shell) {
 			}
 	};
 
-	var prompt = document.createElement('div');
-	prompt.setAttribute('class','JSRootPrompt');
-	prompt.innerHTML="root [" + number.toString() + "] ";
 
-	var promptInput = document.createElement('input');
+	var prompt = document.createElement('div');
+	prompt .setAttribute('class','JSRootPrompt');
+
+	prompt.setAttribute("style","display: inline-block;vertical-align: top;");
+
+	var preprompt= document.createTextNode("root [" + number.toString() + "] ");
+	prompt.appendChild(preprompt);
+
+	var promptInput = document.createElement('textarea');
+	promptInput.setAttribute('value','');
 	promptInput.setAttribute('class','JSRootPrompt');
-	promptInput.setAttribute('type','text');
+    var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;';
+	promptInput.setAttribute('style',style);
 	promptInput.setAttribute("autofocus","autofocus");
 	promptInput.setAttribute('id', "JSRootPrompt" + number.toString());
 	promptInput.addEventListener('keypress', this.keypressEvent, true);
-
-	promptInput.focus();
 	prompt.appendChild(promptInput);
 
+    function adjustPrompt () {
+    	promptInput.style.height = 'auto';
+    	promptInput.style.height = promptInput.scrollHeight+'px';
+    }
 
 	this.getElement = function() {
 		return prompt;
@@ -59,32 +71,4 @@ function JSRootPrompt(number,shell) {
 	this.setReadOnly = function(){
 		promptInput.setAttribute("readonly");
     };
-
-    this.setFocus = function(){
-    	promptInput.focus();
-    };
 }
-
-
-//function parseInputEvent() {
-//	var key;
-//	if (window.event) {
-//		key = event.keyCode;
-//	}
-//
-//	if (key == _enter) {
-//		document.write(key);
-//
-////
-////		var line = document.getElementById("JSRootPrompt"+ RootPrompt.number.toString());
-////		line.setAttribute("readonly");
-////		RootPrompt.history.push(line.value);
-////
-////		RootPrompt.number++;
-////		document.getElementById("JSRootShell").innerHTML+="<br>"+RootPrompt.getPrompt();
-////
-////		RootPrompt.history_position = 0;
-//	}
-//
-//}
-//
