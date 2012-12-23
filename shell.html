@@ -8,11 +8,20 @@
 <meta name="email" content="andresete.chaos@gmail.com" />
 <meta name="Description" content="ROOT's Shell for web " />
 <script language="javascript" src="JSRootPrompt.js"></script>
+<script language="javascript" src="JSRootShell.js"></script>
 </head>
 
-<body onload="InitShell();">
+<body >
 
-<div id="JSRootShell"></div>
+<script language="javascript">
+
+var RootShell = new JSRootShell();
+RootShell.Init();
+//var RootPrompt = new JSRootPrompt();
+//document.body.appendChild(RootPrompt.getPrompt());
+
+//var RootShell = new JSRootShell("test");
+</script>
 
 
 <!-- <script language="javascript" src="JSROOTShell.js"></script> -->

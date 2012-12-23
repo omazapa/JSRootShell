@@ -17,87 +17,74 @@ var _delete = 46;
 var _up = 38;
 var _down = 40;
 
-function JSRootPrompt() {
+function JSRootPrompt(number,shell) {
 	// line number in prompt
-	this.number = 0;
-	this.getPrompt = function() {
-		var prePrompt = "root [" + this.number + "] ";
-		var inputPromptId = " class=\"JSRootPrompt\" id=\"JSRootPrompt" + this.number.toString() + "\" ";
-		var inputPromptEvents = " onkeypress=\"parseInputEvent()\"  onkeyup=\"callHistoryUp()\" onkeydown=\"callHistoryDown()\" ";
-		var inputPromptStyle = " style=\"border-style:none;\" ";
-		var inputPromptFull = prePrompt + "<input type=\"text\"" + inputPromptId + inputPromptEvents + inputPromptStyle + ">";
-		return inputPromptFull;
+	number = number || "0";
+	number = number.toString();
+	this.keypressEvent = function(){
+			var key;
+			if (window.event) {
+				key = event.keyCode;
+			}else
+			{
+				key = event.witch;
+			}
+
+			if (key == _enter) {
+			  //shell callback here
+				shell.newPrompt();
+//				alert(document.getElementById("JSRootPrompt" + number).value);
+			}
 	};
-	this.parseInput = parseInputEvent;
-	this.history = [];
-	this.history_position = 0;
+
+	var prompt = document.createElement('div');
+	prompt.setAttribute('class','JSRootPrompt');
+	prompt.innerHTML="root [" + number.toString() + "] ";
+
+	var promptInput = document.createElement('input');
+	promptInput.setAttribute('class','JSRootPrompt');
+	promptInput.setAttribute('type','text');
+	promptInput.setAttribute("autofocus","autofocus");
+	promptInput.setAttribute('id', "JSRootPrompt" + number.toString());
+	promptInput.addEventListener('keypress', this.keypressEvent, true);
+
+	promptInput.focus();
+	prompt.appendChild(promptInput);
+
+
+	this.getElement = function() {
+		return prompt;
+	};
+
+	this.setReadOnly = function(){
+		promptInput.setAttribute("readonly");
+    };
+
+    this.setFocus = function(){
+    	promptInput.focus();
+    };
 }
 
-var RootPrompt = new JSRootPrompt();
 
-function callHistoryUp() {
-	var key;
-	if (window.event) {
-		key = event.keyCode;
-	} else {
-		key = e.which;
-	}
-
-	if (key == _up) {
-		var line = document.getElementById("JSRootPrompt"+ RootPrompt.number.toString());
-
-		if ((RootPrompt.history.length > 0)
-				&& (RootPrompt.history_position < RootPrompt.history.length)) {
-			line.setAttribute("value",RootPrompt.history[RootPrompt.history_position]);
-			RootPrompt.history_position++;
-		}
-	}
-
-}
-
-function callHistoryDown() {
-	var key;
-	if (window.event) {
-		key = event.keyCode;
-	} else {
-		key = e.which;
-	}
-
-	if (key == _down) {
-		var line = document.getElementById("JSRootPrompt"+ RootPrompt.number.toString());
-
-		if ((RootPrompt.history.length > 0)
-				&& (RootPrompt.history_position > 0)) {
-			line.setAttribute("value",
-					RootPrompt.history[RootPrompt.history_position]);
-			RootPrompt.history_position--;
-		}
-	}
-}
-
-function parseInputEvent() {
-	var key;
-	if (window.event) {
-		key = event.keyCode;
-	} else {
-		key = e.which;
-	}
-
-	if (key == _enter) {
-
-		var line = document.getElementById("JSRootPrompt"+ RootPrompt.number.toString());
-		line.setAttribute("readonly");
-		RootPrompt.history.push(line.value);
-
-		RootPrompt.number++;
-		document.getElementById("JSRootShell").innerHTML+="<br>"+RootPrompt.getPrompt();
-
-		RootPrompt.history_position = 0;
-	}
-
-}
-
-function InitShell() {
-	document.getElementById("JSRootShell").innerHTML+=RootPrompt.getPrompt();
-//	document.write(RootPrompt.getPrompt());
-}
+//function parseInputEvent() {
+//	var key;
+//	if (window.event) {
+//		key = event.keyCode;
+//	}
+//
+//	if (key == _enter) {
+//		document.write(key);
+//
+////
+////		var line = document.getElementById("JSRootPrompt"+ RootPrompt.number.toString());
+////		line.setAttribute("readonly");
+////		RootPrompt.history.push(line.value);
+////
+////		RootPrompt.number++;
+////		document.getElementById("JSRootShell").innerHTML+="<br>"+RootPrompt.getPrompt();
+////
+////		RootPrompt.history_position = 0;
+//	}
+//
+//}
+//
