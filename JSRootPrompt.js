@@ -53,7 +53,7 @@ function JSRootPrompt(number,shell) {
 	promptInput.setAttribute('value','');
 	promptInput.select();
 	promptInput.setAttribute('class','JSRootPrompt');
-    var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;';
+    var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: 85%;';
 	promptInput.setAttribute('style',style);
 	promptInput.setAttribute("autofocus","autofocus");
 	promptInput.setAttribute('id', "JSRootPrompt" + number.toString());

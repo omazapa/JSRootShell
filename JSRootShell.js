@@ -20,7 +20,7 @@ var _down = 40;
 
 function JSRootShell(id,style) {
 	id = id || "JSRootShell";
-    style = style || "border-style:none;color:#000000;background:#DCDCDC;height:50%;width: 50%;resize: both;";
+    style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
     number = 0;
 	this.updateStyle = function(newstyle)
 	{
