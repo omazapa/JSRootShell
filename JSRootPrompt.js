@@ -17,59 +17,69 @@ var _delete = 46;
 var _up = 38;
 var _down = 40;
 
-function JSRootPrompt(number,shell) {
-	// line number in prompt
-	number = number || "0";
-	number = number.toString();
-	this.keypressEvent = function(){
-	//adjust the promot in text area with every event
-      		adjustPrompt();
+function JSRootPrompt(number, shell)
+{
+   // line number in prompt
+   number = number || "0";
+   number = number.toString();
+   this.keypressEvent = function() {
+      ///////////////////////////////////////////////////
+      //adjust the promot in text area with every event//
+      ///////////////////////////////////////////////////
+      adjustPrompt();
 
-			var key;
-			if (window.event) {
-				key = event.keyCode;
-			}else
-			{
-				key = event.witch;
-			}
+      var key;
+      if (window.event) {
+         key = event.keyCode;
+      } else {
+         key = event.witch;
+      }
 
-			if (key == _enter) {
-			  //shell callback here
-				shell.newPrompt();
-//				alert(document.getElementById("JSRootPrompt" + number).value);
-			}
-	};
+      if (key == _enter) {
+    	  //////////////////////
+         //shell callback here//
+    	 //////////////////////
+         shell.sendRequest();
+         shell.newPrompt();
+      }
+   };
 
+   this.getId = function() {
+      return "JSRootPrompt" + number;
+   };
 
-	var prompt = document.createElement('div');
-	prompt .setAttribute('class','JSRootPrompt');
+   var prompt = document.createElement('div');
+   prompt .setAttribute('class', 'JSRootPrompt');
+   prompt.setAttribute("style", "display: inline-block;vertical-align: top;");
 
-	prompt.setAttribute("style","display: inline-block;vertical-align: top;");
+   var preprompt = document.createTextNode("root [" + number.toString() + "] ");
+   prompt.appendChild(preprompt);
 
-	var preprompt= document.createTextNode("root [" + number.toString() + "] ");
-	prompt.appendChild(preprompt);
+   var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: 85%;';
+   var promptInput = document.createElement('textarea');
+   promptInput.setAttribute('value', '');
+   promptInput.select();
+   promptInput.setAttribute('class', 'JSRootPrompt');
+   promptInput.setAttribute('style', style);
+   promptInput.setAttribute("autofocus", "autofocus");
+   promptInput.setAttribute('id', this.getId());
+   promptInput.addEventListener('keypress', this.keypressEvent, false);
+   prompt.appendChild(promptInput);
 
-	var promptInput = document.createElement('textarea');
-	promptInput.setAttribute('value','');
-	promptInput.select();
-	promptInput.setAttribute('class','JSRootPrompt');
-    var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: 85%;';
-	promptInput.setAttribute('style',style);
-	promptInput.setAttribute("autofocus","autofocus");
-	promptInput.setAttribute('id', "JSRootPrompt" + number.toString());
-	promptInput.addEventListener('keypress', this.keypressEvent, false);
-	prompt.appendChild(promptInput);
+   function adjustPrompt() {
+      promptInput.style.height = 'auto';
+      promptInput.style.height = promptInput.scrollHeight + 'px';
+   }
 
-    function adjustPrompt () {
-    	promptInput.style.height = 'auto';
-    	promptInput.style.height = promptInput.scrollHeight+'px';
-    }
+   this.getElement = function() {
+      return prompt;
+   };
 
-	this.getElement = function() {
-		return prompt;
-	};
+   this.setReadOnly = function(status) {
+         promptInput.setAttribute("readonly");
+   };
 
-	this.setReadOnly = function(){
-		promptInput.setAttribute("readonly");
-    };
+   this.getCode = function() {
+      return promptInput.value;
+   };
 }

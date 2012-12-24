@@ -18,33 +18,70 @@ var _up = 38;
 var _down = 40;
 
 
-function JSRootShell(id,style) {
-	id = id || "JSRootShell";
-    style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
-    number = 0;
-	this.updateStyle = function(newstyle)
-	{
-		document.getElementById(id).setAttribute("style", newstyle);
-	};
+function JSRootShell(id, style)
+{
+   id = id || "JSRootShell";
+   style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
+   number = 0;
 
-	this.Init = function(){
-		this.shelldiv = document.createElement('div');
-		this.shelldiv.setAttribute('class','JSRootShell');
-		this.shelldiv.setAttribute('id', id);
-		this.shelldiv.setAttribute('style', style);
+   this.updateStyle = function(newstyle) {
+      document.getElementById(id).setAttribute("style", newstyle);
+   };
 
-		this.currentPrompt = new JSRootPrompt(0,this);
-		this.shelldiv.appendChild(this.currentPrompt.getElement());
+   this.Init = function() {
+      this.shelldiv = document.createElement('div');
+      this.shelldiv.setAttribute('class', 'JSRootShell');
+      this.shelldiv.setAttribute('id', id);
+      this.shelldiv.setAttribute('style', style);
 
-		document.body.appendChild(this.shelldiv);
-	};
+      this.currentPrompt = new JSRootPrompt(0, this);
+      this.shelldiv.appendChild(this.currentPrompt.getElement());
 
-    this.newPrompt= function (){
-    	number++;
-    	this.currentPrompt.setReadOnly();
-		this.currentPrompt = new JSRootPrompt(number,this);
-		this.shelldiv.appendChild(document.createElement('br'));
-		this.shelldiv.appendChild(this.currentPrompt.getElement());
-    };
+      document.body.appendChild(this.shelldiv);
+   };
+
+   this.newPrompt = function() {
+      number++;
+      this.currentPrompt.setReadOnly();
+      this.currentPrompt = new JSRootPrompt(number, this);
+      this.shelldiv.appendChild(document.createElement('br'));
+      this.shelldiv.appendChild(this.currentPrompt.getElement());
+   };
+
+
+   this.sendRequest = function() {
+      if (window.XMLHttpRequest) {
+         xmlhttp = new XMLHttpRequest();
+      } else {
+         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      var url = "JSRootShell.php";
+      var code = "code=" + this.currentPrompt.getCode() + "&promptid=" + this.currentPrompt.getId();
+
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlhttp.send(code);
+      xmlhttp.onreadystatechange = function() {
+
+         if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+               var outputXml =  xmlhttp.responseXML;
+               var promptid  =  outputXml.getElementsByTagName('promptid')[0].firstChild.nodeValue;
+               var output    =  outputXml.getElementsByTagName('output')[0].firstChild.nodeValue;
+               alert(promptid);
+               alert(output);
+               var prompt = document.getElementById(promptid);
+               prompt.innerText += output;
+            }
+         } else {
+            //alert("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+         }
+
+      };
+
+
+
+   };
 
 }
