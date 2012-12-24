@@ -22,9 +22,8 @@ function JSRootShell(id, style)
 {
    id = id || "JSRootShell";
    style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
-   number = 0;
-
-   this.updateStyle = function(newstyle) {
+   var number = 0;
+    this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
    };
 
@@ -50,17 +49,17 @@ function JSRootShell(id, style)
 
 
    this.sendRequest = function() {
-      if (window.XMLHttpRequest) {
-         xmlhttp = new XMLHttpRequest();
-      } else {
-         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-      }
-
-      var url = "JSRootShell.php";
 
       var code = "code="+this.currentPrompt.getCode();
+//      alert(this.currentPrompt.getCode());
       var promptid = "promptid="+this.currentPrompt.getId();
       var msg  = promptid+'&'+code;
+      if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+       } else {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+       }
+      var url = "JSRootShell.php";
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xmlhttp.send(msg);
@@ -81,9 +80,5 @@ function JSRootShell(id, style)
          }
 
       };
-
-
-
    };
-
 }

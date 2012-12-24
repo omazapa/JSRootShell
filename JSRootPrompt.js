@@ -64,11 +64,13 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, false);
+   promptInput.addEventListener('input', this.keypressEvent, false);
    prompt.appendChild(promptInput);
 
    function adjustPrompt() {
       promptInput.style.height = 'auto';
       promptInput.style.height = promptInput.scrollHeight + 'px';
+      prompt.style.height = promptInput.scrollHeight + 'px';
    }
 
    this.getElement = function() {
