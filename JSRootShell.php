@@ -2,15 +2,17 @@
 header('Content-Type: text/xml');
 header('Cache-Control: no-cache');
 header('Cache-Control: no-store' , false);
+
+
+
+if (isset($_POST)) {
 $xmlStr = '<?xml version="1.0" encoding="UTF-8"?>'.
           '<data>'.
           '<promptid>'.$_POST["promptid"].'</promptid>'.
-          '<output> '.'Output'. $_POST["code"].'</output>'.
+          '<output>'.$_POST["code"].'</output>'.
           '</data>';
 echo $xmlStr;
-
-// //print_r($_POST);
-// if (isset($_POST)) {
+}
 //   print("<script language=\"javascript\"> alert('called')</script>");
 //    print("<h1 aling=center >CALLED</h1>");
 // }else

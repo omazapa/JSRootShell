@@ -57,11 +57,13 @@ function JSRootShell(id, style)
       }
 
       var url = "JSRootShell.php";
-      var code = "code=" + this.currentPrompt.getCode() + "&promptid=" + this.currentPrompt.getId();
 
+      var code = "code="+this.currentPrompt.getCode();
+      var promptid = "promptid="+this.currentPrompt.getId();
+      var msg  = promptid+'&'+code;
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xmlhttp.send(code);
+      xmlhttp.send(msg);
       xmlhttp.onreadystatechange = function() {
 
          if (xmlhttp.readyState == 4) {
@@ -69,10 +71,10 @@ function JSRootShell(id, style)
                var outputXml =  xmlhttp.responseXML;
                var promptid  =  outputXml.getElementsByTagName('promptid')[0].firstChild.nodeValue;
                var output    =  outputXml.getElementsByTagName('output')[0].firstChild.nodeValue;
-               alert(promptid);
-               alert(output);
+//               alert(promptid);
+//               alert(output);
                var prompt = document.getElementById(promptid);
-               prompt.innerText += output;
+               prompt.value += '\n'+output;
             }
          } else {
             //alert("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
