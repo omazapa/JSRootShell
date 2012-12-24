@@ -22,7 +22,7 @@ function JSRootPrompt(number, shell)
    // line number in prompt
    number = number || "0";
    number = number.toString();
-   this.keypressEvent = function() {
+   this.keypressEvent = function(e) {
       ///////////////////////////////////////////////////
       //adjust the promot in text area with every event//
       ///////////////////////////////////////////////////
@@ -32,7 +32,8 @@ function JSRootPrompt(number, shell)
       if (window.event) {
          key = event.keyCode;
       } else {
-         key = event.witch;
+    	 //added tu support firefox
+         key = e.charCode || e.keyCode || e.which;
       }
 
       if (key == _enter) {
@@ -77,8 +78,8 @@ function JSRootPrompt(number, shell)
       return prompt;
    };
 
-   this.setReadOnly = function(status) {
-         promptInput.setAttribute("readonly");
+   this.setReadOnly = function() {
+         promptInput.setAttribute("readonly","true");
    };
 
    this.getCode = function() {
