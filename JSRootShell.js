@@ -28,7 +28,7 @@ function JSRootShell(id, style)
    };
 
    this.Init = function() {
-      this.shelldiv = document.createElement('div');
+      this.shelldiv = document.createElement('table');
       this.shelldiv.setAttribute('class', 'JSRootShell');
       this.shelldiv.setAttribute('id', id);
       this.shelldiv.setAttribute('style', style);

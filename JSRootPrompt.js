@@ -49,14 +49,18 @@ function JSRootPrompt(number, shell)
       return "JSRootPrompt" + number;
    };
 
-   var prompt = document.createElement('div');
+   var prompt = document.createElement('tr');
    prompt .setAttribute('class', 'JSRootPrompt');
    prompt.setAttribute("style", "display: inline-block;vertical-align: top;");
 
-   var preprompt = document.createTextNode("root [" + number.toString() + "] ");
-   prompt.appendChild(preprompt);
+   var prepromptCell = document.createElement('td');
+   prepromptCell.setAttribute('class', 'JSRootPrePrompt');
+   prepromptCell.appendChild(document.createTextNode("root [" + number.toString() + "] "));
+   prompt.appendChild(prepromptCell);
 
    var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: 85%;';
+
+   var promptInputCell = document.createElement('td');
    var promptInput = document.createElement('textarea');
    promptInput.setAttribute('value', '');
    promptInput.select();
@@ -66,7 +70,9 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, false);
    promptInput.addEventListener('input', this.keypressEvent, false);
-   prompt.appendChild(promptInput);
+
+   promptInputCell.appendChild(promptInput);
+   prompt.appendChild(promptInputCell);
 
    function adjustPrompt() {
       promptInput.style.height = 'auto';
