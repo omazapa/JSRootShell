@@ -54,7 +54,6 @@ function JSRootShell(id, style)
    this.sendRequest = function() {
 
       var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
-//      alert(code);
       var promptid = "promptid="+this.currentPrompt.getId();
       var msg  = promptid+'&'+code;
       if (window.XMLHttpRequest) {

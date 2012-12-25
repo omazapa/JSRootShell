@@ -58,7 +58,7 @@ function JSRootPrompt(number, shell)
    prepromptCell.appendChild(document.createTextNode("root [" + number.toString() + "] "));
    prompt.appendChild(prepromptCell);
 
-   var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: auto;';
+   var style = 'border: 0 none white; overflow: hidden;padding: 1;outline: none;resize: none;width: auto;';
 
    var promptInputCell = document.createElement('td');
    var promptInput = document.createElement('textarea');
@@ -68,16 +68,16 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('style', style);
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
-   promptInput.addEventListener('keypress', this.keypressEvent, false);
-   promptInput.addEventListener('input', this.keypressEvent, false);
+   promptInput.addEventListener('keypress', this.keypressEvent, true);
+   promptInput.addEventListener('input', this.keypressEvent, true);
+   promptInput.addEventListener('load' ,promptInput.focus(),true);
 
    promptInputCell.appendChild(promptInput);
    prompt.appendChild(promptInputCell);
 
    function adjustPrompt() {
-      promptInput.style.height = 'auto';
+//      promptInput.style.height = 'auto';
       promptInput.style.height = promptInput.scrollHeight + 'px';
-      prompt.style.height = promptInput.scrollHeight + 'px';
    }
 
    this.getElement = function() {
