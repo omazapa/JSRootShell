@@ -28,13 +28,16 @@ function JSRootShell(id, style)
    };
 
    this.Init = function() {
-      this.shelldiv = document.createElement('table');
+      this.shelldiv = document.createElement('div');
       this.shelldiv.setAttribute('class', 'JSRootShell');
       this.shelldiv.setAttribute('id', id);
       this.shelldiv.setAttribute('style', style);
 
+      this.shelltable =  document.createElement('table');
+      this.shelldiv.appendChild(this.shelltable);
+
       this.currentPrompt = new JSRootPrompt(0, this);
-      this.shelldiv.appendChild(this.currentPrompt.getElement());
+      this.shelltable.appendChild(this.currentPrompt.getElement());
 
       document.body.appendChild(this.shelldiv);
    };
@@ -43,15 +46,15 @@ function JSRootShell(id, style)
       number++;
       this.currentPrompt.setReadOnly();
       this.currentPrompt = new JSRootPrompt(number, this);
-      this.shelldiv.appendChild(document.createElement('br'));
-      this.shelldiv.appendChild(this.currentPrompt.getElement());
+      this.shelltable.appendChild(document.createElement('br'));
+      this.shelltable.appendChild(this.currentPrompt.getElement());
    };
 
 
    this.sendRequest = function() {
 
-      var code = "code="+this.currentPrompt.getCode();
-//      alert(this.currentPrompt.getCode());
+      var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
+//      alert(code);
       var promptid = "promptid="+this.currentPrompt.getId();
       var msg  = promptid+'&'+code;
       if (window.XMLHttpRequest) {
@@ -67,18 +70,15 @@ function JSRootShell(id, style)
 
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
-               var outputXml =  xmlhttp.responseXML;
-               var promptid  =  outputXml.getElementsByTagName('promptid')[0].firstChild.nodeValue;
-               var output    =  outputXml.getElementsByTagName('output')[0].firstChild.nodeValue;
-//               alert(promptid);
-//               alert(output);
-               var prompt = document.getElementById(promptid);
-               prompt.value += '\n'+output;
-            }
+           	var output =  xmlhttp.responseText;
+           	var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
+            var prompt = document.getElementById(json_obj.promptid);
+            prompt.value += '\n'+json_obj.output;
+            };
          } else {
             //alert("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
-         }
+         };
 
       };
    };
-}
+};

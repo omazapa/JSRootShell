@@ -58,7 +58,7 @@ function JSRootPrompt(number, shell)
    prepromptCell.appendChild(document.createTextNode("root [" + number.toString() + "] "));
    prompt.appendChild(prepromptCell);
 
-   var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: 85%;';
+   var style = 'border: 0 none white; overflow: hidden;padding: 0;outline: none;resize: none;width: auto;';
 
    var promptInputCell = document.createElement('td');
    var promptInput = document.createElement('textarea');
