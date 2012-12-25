@@ -1,5 +1,62 @@
+#include<string>
+#include<sstream>
+#include<iostream>
+#include<fstream>
+#include<TRint.h>
+#include<TSocket.h>
+#include<TMessage.h>
+
+class TIOCapture
+{
+public:
+  TIOCapture(){
+  capturing=false;  
+  }
+  void InitCapture()
+  {
+    if(!capturing)
+    {
+      oldstdout = std::cout.rdbuf(stdoutbuffer.rdbuf());
+      oldstderr = std::cerr.rdbuf(stderrbuffer.rdbuf());
+      capturing = true;
+    }
+  }
+  
+  void EndCapture()
+  {
+    if(capturing)
+    {
+      std::cout.rdbuf(oldstdout);
+      std::cerr.rdbuf(oldstderr);
+      capturing = false;
+    }
+  }
+  
+  std::string getStdout()
+  {
+   return stdoutbuffer.str(); 
+  }
+
+  std::string getStderr()
+  {
+   return stderrbuffer.str(); 
+  }
+
+private:
+  bool capturing;
+  
+  std::stringstream stdoutbuffer;
+  std::streambuf * oldstdout;
+  
+  std::stringstream stderrbuffer;
+  std::streambuf * oldstderr;
+};
+
+
+
 void RootWebServer()
 {
+   TIOCapture cap;
    TServerSocket *ServerSocket = new TServerSocket(9090, kTRUE);
    printf("Server Started in %d\n",9090);
 
@@ -27,14 +84,18 @@ void RootWebServer()
    
    if (ret < 0) {
          printf("error receiving\n");
-         cout<<"RecvBufer = "<<buffer<<endl;
          break;
     }
     cout<<"RecvBufer = "<<buffer<<endl;
+    cap.InitCapture();
     gROOT->ProcessLine(buffer);
-
-     delete [] buffer;
-     delete sock;
+    cap.EndCapture();
+    std::string stderr = cap.getStderr();
+    TMessage *msg_stderr_size=new TMessage;
+    msg_stderr_size.WriteInt(stderr.length());
+    ret = sock->Send(msg_stderr_size);
+    delete [] buffer;
+    delete sock;
    }
 
    
