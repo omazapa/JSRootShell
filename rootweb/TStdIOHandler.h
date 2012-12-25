@@ -11,25 +11,25 @@
 * For the list of contributors see $ROOTSYS/README/CREDITS.              *
 *************************************************************************/
 
-#ifndef ROOT_TStdIOCapture
-#define ROOT_TStdIOCapture
+#ifndef ROOT_TStdIOHandler
+#define ROOT_TStdIOHandler
 #include<string>
 #include<sstream>
 #include<iostream>
 #include<fstream>
 
-class TStdIOCapture
+class TStdIOHandler
 {
 public:
-  TStdIOCapture(){
+  TStdIOHandler(){
   capturing=false;  
   }
   void InitCapture()
   {
     if(!capturing)
     {
-      oldstdout = std::cout.rdbuf(stdoutbuffer.rdbuf());
       oldstderr = std::cerr.rdbuf(stderrbuffer.rdbuf());
+      oldstdout = std::cout.rdbuf(stdoutbuffer.rdbuf());
       capturing = true;
     }
   }
@@ -54,6 +54,11 @@ public:
    return stderrbuffer.str(); 
   }
 
+  void clear(){
+    stdoutbuffer.str("");
+    stderrbuffer.str("");
+  }
+  
 private:
   bool capturing;
   

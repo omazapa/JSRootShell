@@ -1,11 +1,11 @@
-CXXFLAGS = -I/usr/include/root
+CXXFLAGS = -I/usr/include/root -I.
 LDFLAGS  = -lNet -lRint
 
-all: capture
+all: rootshellclient rootshellserver
 
-rootweb: rootweb.cpp
+rootshellclient: rootshellclient.cxx TJSRootShellServer.cxx  TJSRootShellServer.h  TStdIOHandler.h
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
+rootshellserver: rootshellserver.cxx TJSRootShellServer.cxx  TJSRootShellServer.h  TStdIOHandler.h
+	$(CXX) $(CXXFLAGS) rootshellserver.cxx TJSRootShellServer.cxx -o $@ $(LDFLAGS)
 
-capture: capture.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)

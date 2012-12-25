@@ -23,26 +23,30 @@
 #include<TMessage.h>
 #include<TRint.h>
 
-#include<TStdIOCapture.h>
+#include"TStdIOHandler.h"
 
 class TJSRootShellServer: TObject
 {
   public:
-    TJSRootShellServer(Int_t port);
+    TJSRootShellServer(Int_t port,Int_t argc,Char_t **argv,Bool_t logging=true);
     ~TJSRootShellServer();
     Bool_t Init();
     Bool_t End();
     void Loop();
     Bool_t tabRequest();
-    Bool_t sendStderr();
-    Bool_t sendStdout();
+    Bool_t sendStderr(TSocket *sock,std::string msg);
+    Bool_t sendStdout(TSocket *sock,std::string msg);
     
 private:
   Int_t iPort;
-  TStdIOCapture stdCapturer;
+  TStdIOHandler ioHandler;
   TServerSocket *sSocket;
+  TRint	        *tShell;
   Bool_t bConnected;
   Bool_t bLoopStatus;
+  Bool_t bLogging;
+  Int_t iArgc;
+  Char_t **cArgv;
 };
 
 #endif

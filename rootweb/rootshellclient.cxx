@@ -5,7 +5,7 @@
 #include<TRint.h>
 #include<TSocket.h>
 #include<TMessage.h>
-
+#include<stdlib.h>
 using namespace std;
 
 
@@ -28,7 +28,32 @@ int main(int argc,char *argv[])
   int ret = sock->Send(msg_size);
   
   ret = sock->SendRaw(sock_buffer,bsize_readed);
-  cout<<buffer<<" "<<bsize_readed<<endl;
+  
+  for(int i=0;i<2;i++)
+  {
+    TMessage *rmsg_size=new TMessage();
+     ret = sock->Recv(rmsg_size);
+     if (ret< 0) {
+         cerr<<"Error receiving TMessage with message size in method Loop.\n";
+         delete sock;
+	 delete rmsg_size;
+     }
+     rmsg_size->ReadInt(bsize);
+     
+     char *bufferr = new char[bsize];
+     ret = sock->RecvRaw(bufferr,bsize);
+     
+     if (ret< 0) {
+         cerr<<"Error receiving Raw data with in method Loop.\n";
+         delete sock;
+         delete rmsg_size;
+         delete bufferr;
+     }  
+  cout<<bufferr<<" "<<bsize_readed<<endl;      
+  }
+
+  
+  
   }
   
   return 0;

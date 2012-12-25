@@ -1,10 +1,18 @@
-#include<TJSRootShellServer.h>
+#include"TJSRootShellServer.h"
+#include<TROOT.h>
+#include<iostream>
 
-TJSRootShellServer::TJSRootShellServer(Int_t port)
+using namespace std;
+
+TJSRootShellServer::TJSRootShellServer(Int_t port,Int_t argc,Char_t **argv,Bool_t logging)
 {
   iPort=port;
   bConnected=false;
   sSocket=NULL;
+  bLogging=logging;
+  iArgc=argc;
+  cArgv=argv;
+  bLoopStatus=true;
 }
 
 TJSRootShellServer::~TJSRootShellServer()
@@ -36,6 +44,7 @@ Bool_t TJSRootShellServer::Init()
 	break;
       }
     }
+    tShell = new TRint("rootwebshell",&iArgc,cArgv);
     return sSocket->GetErrorCode(); 
 }
 
@@ -45,30 +54,119 @@ Bool_t TJSRootShellServer::End()
     switch(sSocket->GetErrorCode())
     {
       case 0 :{
-	cout<<"Server finished "<endl; 
+	cout<<"Server finished "<<endl; 
 	bConnected=true;
 	break;
       }
       case -1 :{
-	cerr<<"low level socket() call failed\n";  
+	cerr<<"Error: low level socket() call failed\n";  
 	break;
       }
       case -2 :{
-	cerr<<"low level bind() call failed\n";  
+	cerr<<"Error: low level bind() call failed\n";  
 	break;
       }
       case -3 :{
-	cerr<<"low level listen() call failed\n";  
+	cerr<<"Error: low level listen() call failed\n";  
 	break;
       }
     }
-  return return sSocket->GetErrorCode();
+  return sSocket->GetErrorCode();
 }
 
 void TJSRootShellServer::Loop()
 {
-  while(bLoopStatus)
+  Int_t return_code;
+  Int_t buffer_size;
+  while(true)
   {
-    
+     
+     TSocket *sock = sSocket->Accept();
+     TMessage *msg_size=new TMessage();
+     return_code = sock->Recv(msg_size);
+     if (return_code < 0) {
+         cerr<<"Error receiving TMessage with message size in method Loop.\n";
+         delete sock;
+	 delete msg_size;
+         continue;
+     }
+     msg_size->ReadInt(buffer_size);
+     if(bLogging){cout<<"Loop: Recv(TMessage): msg_size = "<<buffer_size<<endl;}
+     
+     char *buffer = new char[buffer_size];
+     return_code = sock->RecvRaw(buffer,buffer_size);
+     
+     if (return_code < 0) {
+         cerr<<"Error receiving Raw data with in method Loop.\n";
+         delete sock;
+         delete msg_size;
+         delete buffer;
+         continue;
+     }
+    if(bLogging){cout<<"Loop: RecvRaw: buffer = "<<buffer<<endl;}
+    ioHandler.clear();
+    ioHandler.InitCapture();
+    tShell->ProcessLine(buffer);
+    ioHandler.EndCapture();
+    sendStdout(sock,ioHandler.getStdout());
+    sendStderr(sock,ioHandler.getStderr());
+     
+     delete sock;
+     delete msg_size;
+     delete buffer;
   }
 }
+
+Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
+{
+    string msg_json = "{'stderr':\""+msg+"\"}";
+    Int_t return_code;
+    TMessage *msg_size=new TMessage;
+    msg_size->WriteInt(msg_json.length());
+    return_code = sock->Send(*msg_size);
+    if (return_code < 0) {
+         cerr<<"Error sending TMessage with message size in method sendStderr.\n";
+         delete msg_size;
+        return false;
+     }
+ 
+     return_code = sock->SendRaw(msg_json.c_str(),msg_json.length());
+     
+     if (return_code < 0) {
+         cerr<<"Error sending SendRaw's data with message size in method sendStderr.\n";
+         delete msg_size;
+        return false;
+     }
+     
+    delete msg_size;
+    return true;
+}
+
+Bool_t TJSRootShellServer::sendStdout(TSocket *sock,std::string msg)
+{
+    string msg_json = "{'stdout':\""+msg+"\"}";
+    Int_t return_code;
+    TMessage *msg_size=new TMessage;
+    msg_size->WriteInt(msg_json.length());
+    return_code = sock->Send(*msg_size);
+    if (return_code < 0) {
+         cerr<<"Error sending TMessage with message size in method sendStdout.\n";
+         delete msg_size;
+        return false;
+     }
+ 
+     return_code = sock->SendRaw(msg_json.c_str(),msg_json.length());
+     
+     if (return_code < 0) {
+         cerr<<"Error sending SendRaw's data with message size in method sendStdout.\n";
+         delete msg_size;
+        return false;
+     }
+     
+    delete msg_size;
+    return true;
+  
+}
+
+
+
