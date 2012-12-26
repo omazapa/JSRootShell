@@ -119,7 +119,7 @@ void TJSRootShellServer::Loop()
 
 Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
 {
-    string msg_json = "{'stderr':\""+msg+"\"}";
+    string msg_json = "'stderr':\""+msg+"\"";
     Int_t return_code;
     TMessage *msg_size=new TMessage;
     msg_size->WriteInt(msg_json.length());
@@ -144,7 +144,7 @@ Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
 
 Bool_t TJSRootShellServer::sendStdout(TSocket *sock,std::string msg)
 {
-    string msg_json = "{'stdout':\""+msg+"\"}";
+    string msg_json = "'stdout':\""+msg+"\"";
     Int_t return_code;
     TMessage *msg_size=new TMessage;
     msg_size->WriteInt(msg_json.length());

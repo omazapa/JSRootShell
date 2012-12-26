@@ -11,17 +11,24 @@ using namespace std;
 
 int main(int argc,char *argv[])
 {
-  if(argc == 2)
+  if(argc == 1)
   {
-  int bsize = atoi(argv[1]);
+  int bsize = 10000;
   int bsize_readed = 0;
   char buffer[bsize];
+  string json_msg;
+  
   bsize_readed = read(STDIN_FILENO,buffer,bsize);
-  TSocket *sock = new TSocket("localhost", 9090);
   
+  char *promptid=new char[bsize_readed];
+  memcpy(promptid,buffer,bsize_readed);
+  json_msg = "{'promptid':'"+string(promptid)+"',";
+  
+  bsize_readed = read(STDIN_FILENO,buffer,bsize);
   char *sock_buffer = new char[bsize_readed];
-  
   memcpy(sock_buffer,buffer,bsize_readed);
+  
+  TSocket *sock = new TSocket("localhost", 9090);
   
   TMessage msg_size;
   msg_size.WriteInt(bsize_readed);
@@ -40,21 +47,18 @@ int main(int argc,char *argv[])
      }
      rmsg_size->ReadInt(bsize);
      
-     char *bufferr = new char[bsize];
-     ret = sock->RecvRaw(bufferr,bsize);
+     char *bufferout = new char[bsize];
+     ret = sock->RecvRaw(bufferout,bsize);
      
      if (ret< 0) {
          cerr<<"Error receiving Raw data with in method Loop.\n";
          delete sock;
          delete rmsg_size;
-         delete bufferr;
-     }  
-  cout<<bufferr<<" "<<bsize_readed<<endl;      
+         delete bufferout;
+     }
+  json_msg += string(bufferout)+","; 
+  cout<<bufferout<<" "<<bsize_readed<<endl;
   }
-
-  
-  
   }
-  
   return 0;
 }
