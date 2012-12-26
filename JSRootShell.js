@@ -2,7 +2,7 @@
 * Copyright (C) 2012,  Gfif Developers                                   *
 * Grupo de Fenomenologia de Interacciones Fundamentales                  *
 * http://gfif.udea.edu.co                                                *
-* DivisiÃ³n de ciencias de la computaciÃ³n Gfifdev                         *
+* División de ciencias de la computación Gfifdev                         *
 * http://gfifdev.udea.edu.co                                             *
 * Created and Maintained By Omar Andres Zapata Mesa                      *
 * All rights reserved.                                                   *

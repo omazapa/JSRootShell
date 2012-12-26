@@ -1,11 +1,15 @@
-CXXFLAGS = -I/usr/include/root -I.
-LDFLAGS  = -lNet -lRint
+CXXFLAGS = -I/usr/include/root -I. -g 
+LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -lNet -lRint 
+AR       = ar rcs
 
 all: rootshellclient rootshellserver
 
-rootshellclient: rootshellclient.cxx TJSRootShellServer.cxx  TJSRootShellServer.h  TStdIOHandler.h
-	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
+rootshellclient: rootshellclient.cxx TJSRootShellClient.cxx  TJSRootShellClient.h
+	$(CXX) $(CXXFLAGS) $< TJSRootShellClient.cxx -o $@ $(LDFLAGS) 
 
 rootshellserver: rootshellserver.cxx TJSRootShellServer.cxx  TJSRootShellServer.h  TStdIOHandler.h
-	$(CXX) $(CXXFLAGS) rootshellserver.cxx TJSRootShellServer.cxx -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $< TJSRootShellServer.cxx -o $@ $(LDFLAGS) 
 
+	
+clean:
+	rm -rf *~ *.o *.a rootshellclient rootshellserver

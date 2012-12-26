@@ -3,7 +3,7 @@
 
 using namespace std;
 
-TJSRootShellClient::TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_t logging=true)
+TJSRootShellClient::TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_t logging)
 {
   iPort=port;
   bConnected=false;
@@ -13,6 +13,26 @@ TJSRootShellClient::TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_
   cArgv=argv;  
 }
 
+std::string TJSRootShellClient::getPipe()
+{
+  string pipe_msg;
+  //rading 1024 bytes 
+  while(true)
+  {
+  Char_t* buffer=new Char_t[1024];
+  Int_t bsize_readed = read(STDIN_FILENO,buffer,1024);
+    if(bsize_readed>0)
+    {
+      Char_t *realbuffer=new Char_t[bsize_readed];
+      memcpy(realbuffer,buffer,bsize_readed);
+      pipe_msg+=realbuffer;
+      delete[] buffer;
+      delete[] realbuffer;
+    }else{break;}
+  }
+  if(bLogging){cout<<"getPipe: buffer = "<<pipe_msg<<endl;}
+  return pipe_msg;
+}
 
 Bool_t TJSRootShellClient::Init()
 {
@@ -50,12 +70,12 @@ Bool_t TJSRootShellClient::promptRequest()
 {
   
 }
-Bool_t TJSRootShellClient::recvStderr(TSocket *sock,std::string &msg)
+Bool_t TJSRootShellClient::recvStderr(std::string &msg)
 {
     Int_t return_code;
     Int_t bsize;
     TMessage *msg_size=new TMessage;
-    return_code = sock->Recv(msg_size);
+    return_code = sSocket->Recv(msg_size);
         if (return_code < 0) {
          cerr<<"Error receiving TMessage with message's size in method recvStderr.\n";
          delete msg_size;
@@ -64,7 +84,7 @@ Bool_t TJSRootShellClient::recvStderr(TSocket *sock,std::string &msg)
      msg_size->ReadInt(bsize);
 
      Char_t *stderrbuf = new Char_t[bsize];
-     return_code = sock->RecvRaw(stderrbuf,bsize);
+     return_code = sSocket->RecvRaw(stderrbuf,bsize);
      if (return_code < 0) {
          cerr<<"Error receiving SendRaw's data with stderr content in method recvStderr.\n";
          delete msg_size;
@@ -76,12 +96,37 @@ Bool_t TJSRootShellClient::recvStderr(TSocket *sock,std::string &msg)
     delete[] stderrbuf;
     return true;
 }
-Bool_t TJSRootShellClient::recvStdout(TSocket *sock,std::string &msg)
+
+Bool_t   TJSRootShellClient::processLineRequest(std::string code)
+{
+    Int_t return_code;
+    TMessage *msg_size=new TMessage;
+    msg_size->WriteInt(code.length());
+    return_code = sSocket->Send(*msg_size);
+    if (return_code < 0) {
+         cerr<<"Error sending TMessage with message size in method sendStderr.\n";
+         delete msg_size;
+        return false;
+     }
+ 
+     return_code = sSocket->SendRaw(code.c_str(),code.length());
+     
+     if (return_code < 0) {
+         cerr<<"Error sending SendRaw's data with message size in method sendStderr.\n";
+         delete msg_size;
+        return false;
+     }
+     
+    delete msg_size;
+    return true;
+}
+
+Bool_t TJSRootShellClient::recvStdout(std::string &msg)
 {
     Int_t return_code;
     Int_t bsize;
     TMessage *msg_size=new TMessage;
-    return_code = sock->Recv(msg_size);
+    return_code = sSocket->Recv(msg_size);
         if (return_code < 0) {
          cerr<<"Error receiving TMessage with message's size in method recvStdout.\n";
          delete msg_size;
@@ -90,7 +135,7 @@ Bool_t TJSRootShellClient::recvStdout(TSocket *sock,std::string &msg)
      msg_size->ReadInt(bsize);
 
      Char_t *stdoutbuf = new Char_t[bsize];
-     return_code = sock->RecvRaw(stdoutbuf,bsize);
+     return_code = sSocket->RecvRaw(stdoutbuf,bsize);
      if (return_code < 0) {
          cerr<<"Error receiving SendRaw's data with stderr content in method recvStdout.\n";
          delete msg_size;
