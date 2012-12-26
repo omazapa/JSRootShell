@@ -76,6 +76,7 @@ function JSRootPrompt(number, shell)
    prompt.appendChild(promptInputCell);
 
    function adjustPrompt() {
+//      promptInput.style.height = 'auto';
       promptInput.style.height = promptInput.scrollHeight + 'px';
    }
 

@@ -2,7 +2,7 @@
 * Copyright (C) 2012,  Gfif Developers                                   *
 * Grupo de Fenomenologia de Interacciones Fundamentales                  *
 * http://gfif.udea.edu.co                                                *
-* División de ciencias de la computación Gfifdev                         *
+* DivisiÃ³n de ciencias de la computaciÃ³n Gfifdev                         *
 * http://gfifdev.udea.edu.co                                             *
 * Created and Maintained By Omar Andres Zapata Mesa                      *
 * All rights reserved.                                                   *
@@ -26,6 +26,15 @@ function JSRootShell(id, style)
     this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
    };
+   
+   function isJson(value) {
+    try {
+        JSON && JSON.parse(value) || $.parseJSON(value);
+    } catch (e) {
+        return false;
+    }
+    return true;
+   }
 
    this.Init = function() {
       this.shelldiv = document.createElement('div');
@@ -70,9 +79,16 @@ function JSRootShell(id, style)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var output =  xmlhttp.responseText;
-           	var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
-            var prompt = document.getElementById(json_obj.promptid);
-            prompt.value += '\n'+json_obj.output;
+		if(isJson())
+		{
+                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);		  
+                    var prompt = document.getElementById(json_obj.promptid);
+                    prompt.value += '\n'+json_obj.output;
+		}else
+		{
+		 alert("Message is not valid JSON string\nMSG = "+output); 
+		}
+
             };
          } else {
             //alert("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);

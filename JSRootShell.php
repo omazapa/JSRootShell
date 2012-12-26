@@ -18,6 +18,8 @@ $code = urldecode($_POST["code"]);
 $shell = "./rootweb/rootshellclient";
 $env = array('JSRPromptID' => $promptid );
 
+
+
 $process = proc_open($shell, $descriptorspec, $pipes, $cwd, $env);
 if (is_resource($process)) {
     fwrite($pipes[0],$code);
@@ -28,7 +30,7 @@ if (is_resource($process)) {
     echo stream_get_contents($pipes[2]);
     fclose($pipes[2]);
     $return_value = proc_close($process);
-    echo "command returned $return_value\n";
+   echo "command returned $return_value\n";
 }
 }
 
