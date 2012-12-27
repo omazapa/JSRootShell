@@ -13,7 +13,7 @@ int main(int argc,char *argv[])
 {
   string json_msg;
 
-  TJSRootShellClient client(9090,argc,argv);
+  TJSRootShellClient client(9090,argc,argv,false);
   if(client.Init() != 0) return false;
   
   //current prompid is set use env variables in php pipe
@@ -22,15 +22,18 @@ int main(int argc,char *argv[])
     cerr<<"Error: can not read current JSRPromptID from envoriment variables.";
     return false;
   }
-  
-  json_msg = "{'promptid':'"+string(getenv("JSRPromptID"))+"',";
-  string msg=client.getPipe();
 
-  client.processLineRequest(msg);
+  string JSRPromptCode=string(getenv("JSRPromptCode"));
+  if(JSRPromptCode.empty()){
+    cerr<<"Error: can not read current JSRPromptCode from envoriment variables.";
+    return false;
+  }
+  client.processLineRequest(JSRPromptCode);
+  
+  string msg;
   client.recvStdout(msg);
-  json_msg += msg+",";
+  cout<<msg;
   client.recvStderr(msg);
-  json_msg += msg+"}";
-  cout<<json_msg<<endl;
+  cerr<<msg;
   return true;
 }

@@ -16,14 +16,14 @@ $cwd = '.';
 $promptid = $_POST["promptid"];
 $code = urldecode($_POST["code"]);
 $shell = "./rootweb/rootshellclient";
-$env = array('JSRPromptID' => $promptid );
+$env = array('JSRPromptID' => $promptid,'JSRPromptCode' =>  $code );
 
 $json_array = Array("promptid" => $promptid); 
 
 $process = proc_open($shell, $descriptorspec, $pipes, $cwd, $env);
 if (is_resource($process)) {
     $json_array["proc_open"] = true;
-    fwrite($pipes[0],$code);
+//     fwrite($pipes[0],$code);
     fclose($pipes[0]);
     $json_array["stdout"] = stream_get_contents($pipes[1]);
     fclose($pipes[1]);

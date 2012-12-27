@@ -93,27 +93,28 @@ void TJSRootShellServer::Loop()
      msg_size->ReadInt(buffer_size);
      if(bLogging){cout<<"Loop: Recv(TMessage): msg_size = "<<buffer_size<<endl;}
      
-     char *buffer = new char[buffer_size];
-     return_code = sock->RecvRaw(buffer,buffer_size);
+     TMessage *msg=new TMessage;
      
+     return_code = sock->Recv(msg);
+     TString buffer;
+     msg->ReadTString(buffer);
      if (return_code < 0) {
          cerr<<"Error receiving Raw data with in method Loop.\n";
          delete sock;
          delete msg_size;
-         delete buffer;
          continue;
      }
     if(bLogging){cout<<"Loop: RecvRaw: buffer = "<<buffer<<endl;}
+    
     ioHandler.clear();
     ioHandler.InitCapture();
-    tShell->ProcessLine(buffer);
+    tShell->ProcessLine(buffer.Data());
     ioHandler.EndCapture();
     sendStdout(sock,ioHandler.getStdout());
     sendStderr(sock,ioHandler.getStderr());
      
      delete sock;
      delete msg_size;
-     delete buffer;
   }
 }
 

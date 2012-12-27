@@ -41,7 +41,7 @@ Int_t TJSRootShellClient::Init()
     switch(sSocket->GetErrorCode())
     {
       case 0 :{
-	cout<<"Server started in port "<<iPort<<endl; 
+// 	cout<<"Server started in port "<<iPort<<endl; 
 	bConnected=true;
 	break;
       }
@@ -108,16 +108,19 @@ Bool_t   TJSRootShellClient::processLineRequest(std::string code)
          delete msg_size;
         return false;
      }
- 
-     return_code = sSocket->SendRaw(code.c_str(),code.length());
+     TMessage *msg=new TMessage;
+     msg->WriteTString(code);
+     return_code = sSocket->Send(*msg);
      
      if (return_code < 0) {
          cerr<<"Error sending SendRaw's data with message size in method sendStderr.\n";
          delete msg_size;
+	 delete msg;
         return false;
      }
      
     delete msg_size;
+    delete msg;
     return true;
 }
 
