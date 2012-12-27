@@ -70,14 +70,16 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, true);
    promptInput.addEventListener('input', this.keypressEvent, true);
-   promptInput.addEventListener('load' ,promptInput.focus(),true);
+   promptInput.addEventListener('haschange', this.keypressEvent, true);
 
    promptInputCell.appendChild(promptInput);
    prompt.appendChild(promptInputCell);
 
    function adjustPrompt() {
-//      promptInput.style.height = 'auto';
+      prompt.style.height = promptInput.scrollHeight + 'px';
+      promptInputCell.style.height = promptInput.scrollHeight + 'px';
       promptInput.style.height = promptInput.scrollHeight + 'px';
+      
    }
 
    this.getElement = function() {

@@ -30,7 +30,7 @@ class TJSRootShellClient: TObject
     TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_t logging=true);
     ~TJSRootShellClient(){if(sSocket) delete sSocket;}
     std::string getPipe();
-    Bool_t Init();
+    Int_t Init();
     Bool_t tabRequest();
     Bool_t promptRequest();
     Bool_t processLineRequest(std::string code); 

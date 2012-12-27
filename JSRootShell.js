@@ -18,19 +18,21 @@ var _up = 38;
 var _down = 40;
 
 
-function JSRootShell(id, style)
+function JSRootShell(id, style,logging)
 {
    id = id || "JSRootShell";
    style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
+   logging = logging || true;
    var number = 0;
     this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
    };
    
-   function isJson(value) {
+   function isJson(jmsg) {
     try {
-        JSON && JSON.parse(value) || $.parseJSON(value);
+       var json_obj =  JSON && JSON.parse(jmsg) || $.parseJSON(jmsg);
     } catch (e) {
+       console.error("Error: parsing json message = "+e);
         return false;
     }
     return true;
@@ -74,24 +76,36 @@ function JSRootShell(id, style)
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xmlhttp.send(msg);
+      if(logging) console.log("Send JSON's XmlHttpMessage: "+msg);
       xmlhttp.onreadystatechange = function() {
 
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var output =  xmlhttp.responseText;
-		if(isJson())
+		if(isJson(output))
 		{
-                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);		  
-                    var prompt = document.getElementById(json_obj.promptid);
-                    prompt.value += '\n'+json_obj.output;
+                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
+		    if(!json_obj.promptid)
+		    {
+		      alert("Error: shell can no get prompt id from xmlhttp response.");
+		      return;
+		    }
+		    var prompt = document.getElementById(json_obj.promptid);
+		    if(json_obj.proc_open)
+		    {
+                         prompt.value += '\n'+json_obj.stderr+'\n'+json_obj.stdout;
+		    }else
+		    {
+		     console.log("Error: the shell can not connect to server."); 
+		    }
 		}else
 		{
-		 alert("Message is not valid JSON string\nMSG = "+output); 
+		 alert("XmlHttp's Response is not valid JSON Message\nMSG = "+output); 
 		}
 
             };
          } else {
-            //alert("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };
 
       };

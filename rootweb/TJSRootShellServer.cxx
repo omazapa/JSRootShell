@@ -119,10 +119,9 @@ void TJSRootShellServer::Loop()
 
 Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
 {
-    string msg_json = "'stderr':\""+msg+"\"";
     Int_t return_code;
     TMessage *msg_size=new TMessage;
-    msg_size->WriteInt(msg_json.length());
+    msg_size->WriteInt(msg.length());
     return_code = sock->Send(*msg_size);
     if (return_code < 0) {
          cerr<<"Error sending TMessage with message size in method sendStderr.\n";
@@ -130,7 +129,7 @@ Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
         return false;
      }
  
-     return_code = sock->SendRaw(msg_json.c_str(),msg_json.length());
+     return_code = sock->SendRaw(msg.c_str(),msg.length());
      
      if (return_code < 0) {
          cerr<<"Error sending SendRaw's data with message size in method sendStderr.\n";
@@ -144,10 +143,9 @@ Bool_t TJSRootShellServer::sendStderr(TSocket *sock,std::string msg)
 
 Bool_t TJSRootShellServer::sendStdout(TSocket *sock,std::string msg)
 {
-    string msg_json = "'stdout':\""+msg+"\"";
     Int_t return_code;
     TMessage *msg_size=new TMessage;
-    msg_size->WriteInt(msg_json.length());
+    msg_size->WriteInt(msg.length());
     return_code = sock->Send(*msg_size);
     if (return_code < 0) {
          cerr<<"Error sending TMessage with message size in method sendStdout.\n";
@@ -155,7 +153,7 @@ Bool_t TJSRootShellServer::sendStdout(TSocket *sock,std::string msg)
         return false;
      }
  
-     return_code = sock->SendRaw(msg_json.c_str(),msg_json.length());
+     return_code = sock->SendRaw(msg.c_str(),msg.length());
      
      if (return_code < 0) {
          cerr<<"Error sending SendRaw's data with message size in method sendStdout.\n";

@@ -34,7 +34,7 @@ std::string TJSRootShellClient::getPipe()
   return pipe_msg;
 }
 
-Bool_t TJSRootShellClient::Init()
+Int_t TJSRootShellClient::Init()
 {
     sSocket = new TSocket("localhost",iPort, kTRUE);
 

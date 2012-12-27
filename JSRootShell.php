@@ -18,20 +18,24 @@ $code = urldecode($_POST["code"]);
 $shell = "./rootweb/rootshellclient";
 $env = array('JSRPromptID' => $promptid );
 
-
+$json_array = Array("promptid" => $promptid); 
 
 $process = proc_open($shell, $descriptorspec, $pipes, $cwd, $env);
 if (is_resource($process)) {
+    $json_array["proc_open"] = true;
     fwrite($pipes[0],$code);
     fclose($pipes[0]);
-    
-    echo stream_get_contents($pipes[1]);
+    $json_array["stdout"] = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
-    echo stream_get_contents($pipes[2]);
+    
+    $json_array["stderr"] = stream_get_contents($pipes[2]);
     fclose($pipes[2]);
-    $return_value = proc_close($process);
-   echo "command returned $return_value\n";
+    $json_array["proc_close"] = proc_close($process);
+}else{
+$json_array["proc_open"] = false;
 }
+
+echo json_encode($json_array);
 }
 
 ?>
