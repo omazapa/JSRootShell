@@ -58,7 +58,6 @@ function JSRootShell(id, style,logging)
       number++;
       this.currentPrompt.setReadOnly();
       this.currentPrompt = new JSRootPrompt(number, this);
-      this.shelltable.appendChild(document.createElement('br'));
       this.shelltable.appendChild(this.currentPrompt.getElement());
    };
 
@@ -94,8 +93,8 @@ function JSRootShell(id, style,logging)
 		    var prompt = document.getElementById(json_obj.promptid);
 		    if(json_obj.proc_open)
 		    {
-		         if(json_obj.stdout !='') prompt.value += '\n'+json_obj.stdout;
-			 if(json_obj.stderr !='') prompt.value += '\n'+json_obj.stderr;
+		         if(json_obj.stdout) prompt.value += '\n'+json_obj.stdout;
+			 if(json_obj.stderr) prompt.value += '\n'+json_obj.stderr;
 			 prompt.style.height = prompt.scrollHeight + 'px';
 		    }else
 		    {
