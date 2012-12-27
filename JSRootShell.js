@@ -45,6 +45,7 @@ function JSRootShell(id, style,logging)
       this.shelldiv.setAttribute('style', style);
 
       this.shelltable =  document.createElement('table');
+      this.shelltable.setAttribute('class', 'JSRootShellTable');
       this.shelldiv.appendChild(this.shelltable);
 
       this.currentPrompt = new JSRootPrompt(0, this);

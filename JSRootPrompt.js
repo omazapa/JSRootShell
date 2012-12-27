@@ -51,21 +51,24 @@ function JSRootPrompt(number, shell)
 
    var prompt = document.createElement('tr');
    prompt .setAttribute('class', 'JSRootPrompt');
-   prompt.setAttribute("style", "display: inline-block;vertical-align: top;");
+   prompt.setAttribute("style", "width: 100%;");
 
    var prepromptCell = document.createElement('td');
    prepromptCell.setAttribute('class', 'JSRootPrePrompt');
+   prepromptCell.setAttribute("style", "display: inline-block;vertical-align: top;resize: none;width:auto;");
    prepromptCell.appendChild(document.createTextNode("root [" + number.toString() + "] "));
    prompt.appendChild(prepromptCell);
 
-   var style = 'border: 0 none white; overflow: hidden;padding: 1;outline: none;resize: none;width: auto;';
+   var style = 'border: 0 none white; overflow: hidden;padding: 1;outline: none;resize: none;';
 
    var promptInputCell = document.createElement('td');
+   promptInputCell.setAttribute('class', 'JSRootPromptCell');
+   promptInputCell.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;");
    var promptInput = document.createElement('textarea');
    promptInput.setAttribute('value', '');
    promptInput.select();
-   promptInput.setAttribute('class', 'JSRootPrompt');
-   promptInput.setAttribute('style', style);
+   promptInput.setAttribute('class', 'JSRootPromptInput');
+   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow: auto;");
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, true);
