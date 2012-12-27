@@ -73,7 +73,7 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('value', '');
    promptInput.select();
    promptInput.setAttribute('class', 'JSRootPromptInput');
-   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow:hidden;");
+   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow:hidden;outline: none;");
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, true);
