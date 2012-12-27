@@ -22,6 +22,11 @@ function JSRootPrompt(number, shell)
    // line number in prompt
    number = number || "0";
    number = number.toString();
+
+   function adjustPrompt() {
+      promptInput.style.height = promptInput.scrollHeight + 'px';
+   }
+
    this.keypressEvent = function(e) {
       ///////////////////////////////////////////////////
       //adjust the promot in text area with every event//
@@ -68,7 +73,7 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('value', '');
    promptInput.select();
    promptInput.setAttribute('class', 'JSRootPromptInput');
-   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow: auto;");
+   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow:hidden;");
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, true);
@@ -77,13 +82,6 @@ function JSRootPrompt(number, shell)
 
    promptInputCell.appendChild(promptInput);
    prompt.appendChild(promptInputCell);
-
-   function adjustPrompt() {
-      prompt.style.height = promptInput.scrollHeight + 'px';
-      promptInputCell.style.height = promptInput.scrollHeight + 'px';
-      promptInput.style.height = promptInput.scrollHeight + 'px';
-      
-   }
 
    this.getElement = function() {
       return prompt;

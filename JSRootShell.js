@@ -94,7 +94,9 @@ function JSRootShell(id, style,logging)
 		    var prompt = document.getElementById(json_obj.promptid);
 		    if(json_obj.proc_open)
 		    {
-                         prompt.value += '\n'+json_obj.stderr+'\n'+json_obj.stdout;
+		         if(json_obj.stdout !='') prompt.value += '\n'+json_obj.stdout;
+			 if(json_obj.stderr !='') prompt.value += '\n'+json_obj.stderr;
+			 prompt.style.height = prompt.scrollHeight + 'px';
 		    }else
 		    {
 		     console.log("Error: the shell can not connect to server."); 
