@@ -55,7 +55,7 @@ function JSRootPrompt(number, shell)
 
    var prepromptCell = document.createElement('td');
    prepromptCell.setAttribute('class', 'JSRootPrePrompt');
-   prepromptCell.setAttribute("style", "display: inline-block;vertical-align: top;resize: none;width:auto;");
+   prepromptCell.setAttribute("style", "display: inline-block;vertical-align: top;resize: none;width:auto;white-space: nowrap;");
    prepromptCell.appendChild(document.createTextNode("root [" + number.toString() + "] "));
    prompt.appendChild(prepromptCell);
 
