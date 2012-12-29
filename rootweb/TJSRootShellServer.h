@@ -23,7 +23,7 @@
 #include<TMessage.h>
 #include<TRint.h>
 
-#include"TStdIOHandler.h"
+
 
 class TJSRootShellServer: TObject
 {

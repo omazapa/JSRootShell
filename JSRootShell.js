@@ -64,6 +64,8 @@ function JSRootShell(id, style,logging)
 
    this.sendRequest = function() {
 
+//       var code = "code="+encodeURI(this.currentPrompt.getCode());
+
       var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
       var promptid = "promptid="+this.currentPrompt.getId();
       var msg  = promptid+'&'+code;
@@ -75,10 +77,13 @@ function JSRootShell(id, style,logging)
       var url = "JSRootShell.php";
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlhttp.setRequestHeader( "Content-Type", "application/json" );
       xmlhttp.send(msg);
       if(logging) console.log("Send JSON's XmlHttpMessage: "+msg);
-      xmlhttp.onreadystatechange = function() {
-
+      xmlhttp.ontimeout = function() {
+	  console.log("The request timed out.");
+	}
+      xmlhttp.onreadystatechange = function(event) {
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var output =  xmlhttp.responseText;
@@ -105,7 +110,7 @@ function JSRootShell(id, style,logging)
 		 alert("XmlHttp's Response is not valid JSON Message\nMSG = "+output); 
 		}
 
-            };
+            }
          } else {
 	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };

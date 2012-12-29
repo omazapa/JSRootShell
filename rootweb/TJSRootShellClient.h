@@ -18,32 +18,24 @@
 #include "Rtypes.h"
 #endif
 
-#include<TSocket.h>
-#include<TServerSocket.h>
-#include<TMessage.h>
-#include<TRint.h>
+#include<TApplicationRemote.h>
 #include<string>
-
+#include"TStdIOHandler.h"
+#include<TRint.h>
+#include<TList.h>
+#include<TFile.h>
+#include<TROOT.h>
 class TJSRootShellClient: TObject
 {
   public:
-    TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_t logging=true);
-    ~TJSRootShellClient(){if(sSocket) delete sSocket;}
-    std::string getPipe();
-    Int_t Init();
-    Bool_t tabRequest();
-    Bool_t promptRequest();
-    Bool_t processLineRequest(std::string code); 
-    Bool_t recvStderr(std::string &msg);
-    Bool_t recvStdout(std::string &msg);
+    TJSRootShellClient(TString url,Int_t argc,Char_t **argv,Bool_t logging=true);
+    ~TJSRootShellClient(){}
+    Bool_t processLine(std::string code); 
     
 private:
-  Int_t iPort;
-  TSocket *sSocket;
-  Bool_t bConnected;
+  TStdIOHandler ioHandler;
   Bool_t bLogging;
-  Int_t iArgc;
-  Char_t **cArgv;
+  TApplicationRemote *rApp;//for remote execution (NOT IMPLEMENTED YET)
+  ofstream fCache;
 };
-
 #endif

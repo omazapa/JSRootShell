@@ -2,7 +2,7 @@ CXXFLAGS = -I/usr/include/root -I. -g
 LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -lNet -lRint 
 AR       = ar rcs
 
-all: rootshellclient rootshellserver
+all: rootshellclient 
 
 rootshellclient: rootshellclient.cxx TJSRootShellClient.cxx  TJSRootShellClient.h
 	$(CXX) $(CXXFLAGS) $< TJSRootShellClient.cxx -o $@ $(LDFLAGS) 

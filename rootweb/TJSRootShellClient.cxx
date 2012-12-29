@@ -1,154 +1,32 @@
 #include"TJSRootShellClient.h"
 #include<iostream>
+#include<TROOT.h>
+#include<TSystem.h>
+#include<TObjString.h>
+#include<TInterpreter.h>
 
 using namespace std;
 
-TJSRootShellClient::TJSRootShellClient(Int_t port,Int_t argc,Char_t **argv,Bool_t logging)
+TJSRootShellClient::TJSRootShellClient(TString url,Int_t argc,Char_t **argv,Bool_t logging)
 {
-  iPort=port;
-  bConnected=false;
-  sSocket=NULL;
   bLogging=logging;
-  iArgc=argc;
-  cArgv=argv;  
+  //loaing includes
+  gROOT->ProcessLine("#include <iostream>");
+  gROOT->ProcessLine("#include <string>"); // for std::string iostream.
+  gROOT->ProcessLine("#include <DllImport.h>");// Defined R__EXTERN
+  gROOT->ProcessLine("#include <vector>");  // Needed because std::vector and std::pair are
+  gROOT->ProcessLine("#include <pair>");    // used within the core ROOT dictionaries
+//   fCache.open("/tmp/jsrootcache.C",std::ios_base::app);
+//   gROOT->LoadMacro("/tmp/jsrootcache.C",0,kTRUE);
 }
 
-std::string TJSRootShellClient::getPipe()
+Bool_t   TJSRootShellClient::processLine(std::string code)
 {
-  string pipe_msg;
-  //rading 1024 bytes 
-  while(true)
-  {
-  Char_t* buffer=new Char_t[1024];
-  Int_t bsize_readed = read(STDIN_FILENO,buffer,1024);
-    if(bsize_readed>0)
-    {
-      Char_t *realbuffer=new Char_t[bsize_readed];
-      memcpy(realbuffer,buffer,bsize_readed);
-      pipe_msg+=realbuffer;
-      delete[] buffer;
-      delete[] realbuffer;
-    }else{break;}
-  }
-  if(bLogging){cout<<"getPipe: buffer = "<<pipe_msg<<endl;}
-  return pipe_msg;
-}
-
-Int_t TJSRootShellClient::Init()
-{
-    sSocket = new TSocket("localhost",iPort, kTRUE);
-
-    switch(sSocket->GetErrorCode())
-    {
-      case 0 :{
-// 	cout<<"Server started in port "<<iPort<<endl; 
-	bConnected=true;
-	break;
+      if(gROOT->ProcessLine(code.c_str())==0)
+      {
+//          fCache<<code+"\n";
+// 	 fCache.flush();
+// 	 fCache.close();
       }
-      case -1 :{
-	cerr<<"Error: low level socket() call failed\n";  
-	break;
-      }
-      case -2 :{
-	cerr<<"Error: low level bind() call failed\n";  
-	break;
-      }
-      case -3 :{
-	cerr<<"Error: low level listen() call failed\n";  
-	break;
-      }
-    }
-    return sSocket->GetErrorCode(); 
 }
-
-
-Bool_t TJSRootShellClient::tabRequest()
-{
-  
-}
-Bool_t TJSRootShellClient::promptRequest()
-{
-  
-}
-Bool_t TJSRootShellClient::recvStderr(std::string &msg)
-{
-    Int_t return_code;
-    Int_t bsize;
-    TMessage *msg_size=new TMessage;
-    return_code = sSocket->Recv(msg_size);
-        if (return_code < 0) {
-         cerr<<"Error receiving TMessage with message's size in method recvStderr.\n";
-         delete msg_size;
-        return false;
-     }
-     msg_size->ReadInt(bsize);
-
-     Char_t *stderrbuf = new Char_t[bsize];
-     return_code = sSocket->RecvRaw(stderrbuf,bsize);
-     if (return_code < 0) {
-         cerr<<"Error receiving SendRaw's data with stderr content in method recvStderr.\n";
-         delete msg_size;
-	 delete[] stderrbuf;
-        return false;
-     }
-     msg=stderrbuf;
-    delete msg_size;
-    delete[] stderrbuf;
-    return true;
-}
-
-Bool_t   TJSRootShellClient::processLineRequest(std::string code)
-{
-    Int_t return_code;
-    TMessage *msg_size=new TMessage;
-    msg_size->WriteInt(code.length());
-    return_code = sSocket->Send(*msg_size);
-    if (return_code < 0) {
-         cerr<<"Error sending TMessage with message size in method sendStderr.\n";
-         delete msg_size;
-        return false;
-     }
-     TMessage *msg=new TMessage;
-     msg->WriteTString(code);
-     return_code = sSocket->Send(*msg);
-     
-     if (return_code < 0) {
-         cerr<<"Error sending SendRaw's data with message size in method sendStderr.\n";
-         delete msg_size;
-	 delete msg;
-        return false;
-     }
-     
-    delete msg_size;
-    delete msg;
-    return true;
-}
-
-Bool_t TJSRootShellClient::recvStdout(std::string &msg)
-{
-    Int_t return_code;
-    Int_t bsize;
-    TMessage *msg_size=new TMessage;
-    return_code = sSocket->Recv(msg_size);
-        if (return_code < 0) {
-         cerr<<"Error receiving TMessage with message's size in method recvStdout.\n";
-         delete msg_size;
-        return false;
-     }
-     msg_size->ReadInt(bsize);
-
-     Char_t *stdoutbuf = new Char_t[bsize];
-     return_code = sSocket->RecvRaw(stdoutbuf,bsize);
-     if (return_code < 0) {
-         cerr<<"Error receiving SendRaw's data with stderr content in method recvStdout.\n";
-         delete msg_size;
-	 delete[] stdoutbuf;
-        return false;
-     }
-     msg=stdoutbuf;
-    delete msg_size;
-    delete[] stdoutbuf;
-    return true;  
-}
-
 
