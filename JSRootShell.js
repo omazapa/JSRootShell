@@ -62,7 +62,37 @@ function JSRootShell(id, style,logging)
       this.currentPrompt = new JSRootPrompt(number, this);
       this.shelltable.appendChild(this.currentPrompt.getElement());
    };
-
+  /*
+   * this function return a xml's element with the next structure
+   * <param>
+   *    <value><string>I am the param</string></value>
+   * </param>
+   * where type="string" and value="I am the param", 
+   * iscdada is optional  arg, when iscdata is true
+   * tha tag type is 
+   * <string><![CDATA[Some <CDATA> I am the param]]></string>
+   * show http://xmlrpc-c.sourceforge.net/doc/libxmlrpc.html#valuetype
+   * for all supported types.
+   */
+  function getXmlParam(xmldoc,type,value,iscdata)
+  {
+       var paramtag  = xmldoc.createElement("param");
+       var valuetag  = xmldoc.createElement("value");
+       var typetag   = xmldoc.createElement(type);
+       var datatag;
+       if(iscdata)
+        {
+          datatag   = xmldoc.createCDATASection(value);
+        }else
+        {
+          datatag  = xmldoc.createTextNode(value);
+        }
+        
+       typetag.appendChild(datatag);
+       valuetag.appendChild(typetag);
+       paramtag.appendChild(valuetag);
+       return paramtag;
+  }
 
    this.sendRequest = function() {
 
@@ -77,80 +107,43 @@ function JSRootShell(id, style,logging)
           xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
        }
        //initialization of xml message
-       //request types are processline, tabcompletion,
-       var msg_dom = document.implementation.createDocument(null, 'msg','xml');
-       var msgtag    = msg_dom.getElementsByTagName("msg")[0];
+       //request types are processline, tabcompletion, history up/down
+       var msg_dom = document.implementation.createDocument(null, 'methodCall','xml');
        
-       var pidtag = msg_dom.createElement("promptid");
-       pidtag.appendChild(msg_dom.createTextNode(promptid));
+       var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
        
-       var reqtag = msg_dom.createElement("request");
-       reqtag.appendChild(msg_dom.createTextNode("processline"));
-       var payload = msg_dom.createElement("payload");
+       var methodnametag    = msg_dom.createElement("methodName");
+       methodnametag.appendChild(msg_dom.createTextNode("sample"));
+       methodcalltag.appendChild(methodnametag);
        
-       var cdata = msg_dom.createCDATASection(code);
-       payload.appendChild(cdata);
        
-       msgtag.appendChild(pidtag);
-       msgtag.appendChild(reqtag);
-       msgtag.appendChild(payload);
-      
-       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-       console.log(msgxmltext);
-//       var raw_msg  = "<data>"promptid+'&'+code;
-//       var xmldoc;
-//       if (window.DOMParser)
-//        {
-//         parser=new DOMParser();
-//        xmldoc=parser.parseFromString("<data></data>","text/xml");
-//        }
-//       else // Internet Explorer
-//       {
-//          xmldoc=new ActiveXObject("Microsoft.XMLDOM");
-//          xmldoc.async=false;
-//          xmldoc.loadXML("<data></data>"); 
-//       } 
-//       
-//      var url = "http://localhost/rootrpc";
-//      xmlhttp.open("POST", url, true);
-//      xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
-//      xmlhttp.send(msg);
-//      if(logging) console.log("Send JSON's XmlHttpMessage: "+msg);
-//      xmlhttp.ontimeout = function() {
-//	  console.log("The request timed out.");
-//	}
-//      xmlhttp.onreadystatechange = function(event) {
-//         if (xmlhttp.readyState == 4) {
-//            if (xmlhttp.status == 200) {
-//           	var output =  xmlhttp.responseText;
-//		if(isJson(output))
-//		{
-//                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
-//		    if(!json_obj.promptid)
-//		    {
-//		      alert("Error: shell can no get prompt id from xmlhttp response.");
-//		      return;
-//		    }
-//		    var prompt = document.getElementById(json_obj.promptid);
-//		    if(json_obj.proc_open)
-//		    {
-//		         if(json_obj.stdout) prompt.value += '\n'+json_obj.stdout;
-//			 if(json_obj.stderr) prompt.value += '\n'+json_obj.stderr;
-//			 prompt.style.height = prompt.scrollHeight + 'px';
-//		    }else
-//		    {
-//		     console.log("Error: the shell can not connect to server."); 
-//		    }
-//		}else
-//		{
-//		 alert("XmlHttp's Response is not valid JSON Message\nMSG = "+output); 
-//		}
-//
-//            }
-//         } else {
-//	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
-//         };
+       var paramstag    = msg_dom.createElement("params");
+       paramstag.appendChild(getXmlParam(msg_dom,"i4","1",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"i4","1",null));
 
-//      };
+       methodcalltag.appendChild(paramstag);
+
+      var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
+//      alert(msgxmltext);
+      var url = "http://localhost/rootrpc";
+      xmlhttp.open("POST", url, true);
+      xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
+      xmlhttp.send(msgxmltext);
+      if(logging) console.log("Send JSON's XmlHttpMessage: "+msgxmltext);
+      xmlhttp.ontimeout = function() {
+	  console.log("The request timed out.");
+	}
+      xmlhttp.onreadystatechange = function(event) {
+         if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+           	var xmlrep =  xmlhttp.responseXML;
+//                console.log(xmlhttp.responseText);
+//                console.log(xmlrep.getElementsByTagName("i4")[0].childNodes[0].nodeValue);
+//                alert(xmlrep.getElementsByTagName("i4").nodeValue);
+            }
+         } else {
+//	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+         };
+      };
    };
 };
