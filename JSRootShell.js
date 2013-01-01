@@ -52,6 +52,8 @@ function JSRootShell(id, style,logging)
       this.shelltable.appendChild(this.currentPrompt.getElement());
 
       document.body.appendChild(this.shelldiv);
+      
+      
    };
 
    this.newPrompt = function() {
@@ -68,53 +70,87 @@ function JSRootShell(id, style,logging)
 
       var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
       var promptid = "promptid="+this.currentPrompt.getId();
-      var msg  = promptid+'&'+code;
+      //initialization of xmlrequest object
       if (window.XMLHttpRequest) {
           xmlhttp = new XMLHttpRequest();
        } else {
           xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
        }
-      var url = "JSRootShell.php";
-      xmlhttp.open("POST", url, true);
-      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xmlhttp.setRequestHeader( "Content-Type", "application/json" );
-      xmlhttp.send(msg);
-      if(logging) console.log("Send JSON's XmlHttpMessage: "+msg);
-      xmlhttp.ontimeout = function() {
-	  console.log("The request timed out.");
-	}
-      xmlhttp.onreadystatechange = function(event) {
-         if (xmlhttp.readyState == 4) {
-            if (xmlhttp.status == 200) {
-           	var output =  xmlhttp.responseText;
-		if(isJson(output))
-		{
-                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
-		    if(!json_obj.promptid)
-		    {
-		      alert("Error: shell can no get prompt id from xmlhttp response.");
-		      return;
-		    }
-		    var prompt = document.getElementById(json_obj.promptid);
-		    if(json_obj.proc_open)
-		    {
-		         if(json_obj.stdout) prompt.value += '\n'+json_obj.stdout;
-			 if(json_obj.stderr) prompt.value += '\n'+json_obj.stderr;
-			 prompt.style.height = prompt.scrollHeight + 'px';
-		    }else
-		    {
-		     console.log("Error: the shell can not connect to server."); 
-		    }
-		}else
-		{
-		 alert("XmlHttp's Response is not valid JSON Message\nMSG = "+output); 
-		}
+       //initialization of xml message
+       //request types are processline, tabcompletion,
+       var msg_dom = document.implementation.createDocument(null, 'msg','xml');
+       var msgtag    = msg_dom.getElementsByTagName("msg")[0];
+       
+       var pidtag = msg_dom.createElement("promptid");
+       pidtag.appendChild(msg_dom.createTextNode(promptid));
+       
+       var reqtag = msg_dom.createElement("request");
+       reqtag.appendChild(msg_dom.createTextNode("processline"));
+       var payload = msg_dom.createElement("payload");
+       
+       var cdata = msg_dom.createCDATASection(code);
+       payload.appendChild(cdata);
+       
+       msgtag.appendChild(pidtag);
+       msgtag.appendChild(reqtag);
+       msgtag.appendChild(payload);
+      
+       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
+       console.log(msgxmltext);
+//       var raw_msg  = "<data>"promptid+'&'+code;
+//       var xmldoc;
+//       if (window.DOMParser)
+//        {
+//         parser=new DOMParser();
+//        xmldoc=parser.parseFromString("<data></data>","text/xml");
+//        }
+//       else // Internet Explorer
+//       {
+//          xmldoc=new ActiveXObject("Microsoft.XMLDOM");
+//          xmldoc.async=false;
+//          xmldoc.loadXML("<data></data>"); 
+//       } 
+//       
+//      var url = "http://localhost/rootrpc";
+//      xmlhttp.open("POST", url, true);
+//      xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
+//      xmlhttp.send(msg);
+//      if(logging) console.log("Send JSON's XmlHttpMessage: "+msg);
+//      xmlhttp.ontimeout = function() {
+//	  console.log("The request timed out.");
+//	}
+//      xmlhttp.onreadystatechange = function(event) {
+//         if (xmlhttp.readyState == 4) {
+//            if (xmlhttp.status == 200) {
+//           	var output =  xmlhttp.responseText;
+//		if(isJson(output))
+//		{
+//                    var json_obj= JSON && JSON.parse(output) || $.parseJSON(output);
+//		    if(!json_obj.promptid)
+//		    {
+//		      alert("Error: shell can no get prompt id from xmlhttp response.");
+//		      return;
+//		    }
+//		    var prompt = document.getElementById(json_obj.promptid);
+//		    if(json_obj.proc_open)
+//		    {
+//		         if(json_obj.stdout) prompt.value += '\n'+json_obj.stdout;
+//			 if(json_obj.stderr) prompt.value += '\n'+json_obj.stderr;
+//			 prompt.style.height = prompt.scrollHeight + 'px';
+//		    }else
+//		    {
+//		     console.log("Error: the shell can not connect to server."); 
+//		    }
+//		}else
+//		{
+//		 alert("XmlHttp's Response is not valid JSON Message\nMSG = "+output); 
+//		}
+//
+//            }
+//         } else {
+//	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+//         };
 
-            }
-         } else {
-	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
-         };
-
-      };
+//      };
    };
 };
