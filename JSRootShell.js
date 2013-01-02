@@ -142,9 +142,22 @@ function JSRootShell(id, style,logging)
                 var stdout = xmlrep.getElementsByTagName("member")[2].childNodes[2];
 
                 var prompt = document.getElementById(promptid);
-                console.log(stdout.childNodes[0].textContent);
-                if(stdout) prompt.value += '\n'+stdout.childNodes[0].textContent;
-	        if(stderr) prompt.value += '\n'+stderr.childNodes[0].textContent;
+                if(logging){
+                   console.log("stdout:"+stdout.childNodes[0].textContent);
+                   console.log("stderr:"+stderr.childNodes[0].textContent);
+                    }
+                
+                if(stdout){
+                    if(stdout.childNodes[0].textContent.trimRight().length != 0){
+                        prompt.value += '\n'+stdout.childNodes[0].textContent;
+                    } 
+                }
+                
+	        if(stderr) {
+                    if(stderr.childNodes[0].textContent.trimRight().length != 0){
+                    prompt.value += '\n'+stderr.childNodes[0].textContent;
+                    }
+                }
                 prompt.style.height = prompt.scrollHeight + 'px';
 //                alert(xmlrep.getElementsByTagName("i4").nodeValue);
             }
