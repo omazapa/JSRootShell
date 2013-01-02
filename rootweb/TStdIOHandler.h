@@ -81,6 +81,7 @@ public:
 	buf_readed = read(stdout_pipe[0], buffer, MAX_LEN);
 	if(buf_readed<=0) break;
 	stdoutpipe += buffer;
+	memset(buffer,0,MAX_LEN+1);
       }
 
       while(true)/* read from pipe into buffer */
@@ -88,6 +89,7 @@ public:
 	buf_readed = read(stderr_pipe[0], buffer, MAX_LEN);
 	if(buf_readed<=0) break;
 	stderrpipe += buffer;
+	memset(buffer,0,MAX_LEN+1);
       }
 
       dup2(saved_stdout, STDOUT_FILENO);  /* reconnect stdout*/
