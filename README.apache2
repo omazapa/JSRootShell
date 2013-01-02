@@ -1,0 +1,20 @@
+Enable module proxy_http
+#a2enmod proxy_http
+#service apache2 restart
+
+
+#edit 
+/etc/apache2/mods-enabled/proxy.conf
+
+add
+ProxyRequests On
+ProxyVia On
+ProxyPass /rootrpc http://localhost:8081/rootrpc
+ProxyPassMatch /rootrpc http://localhost:8081/rootrpc
+ProxyPassReverse /rootrpc http://localhost:8081/rootrpc 
+
+how it works?
+this is like a alias, when you enter 
+http://localhost/rootrpc  is the same that http://localhost:8081/rootrpc
+then put in your javascript code the the request url http://localhost/rootrpc instea http://localhost:8081/rootrpc
+

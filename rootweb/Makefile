@@ -1,15 +1,14 @@
-CXXFLAGS = -I/usr/include/root -I. -g 
-LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -lNet -lRint 
+CXXFLAGS = -I/usr/include/root -I. -g -Wall
+LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -lNet -lRint -lxmlrpc++ -lxmlrpc_server++ -lxmlrpc_server_abyss++ -lxmlrpc_server_pstream++ -lxmlrpc_server_abyss++ -lpthread
 AR       = ar rcs
 
-all: rootshellclient 
+all: jsrootshell
 
-rootshellclient: rootshellclient.cxx TJSRootShellClient.cxx  TJSRootShellClient.h
-	$(CXX) $(CXXFLAGS) $< TJSRootShellClient.cxx -o $@ $(LDFLAGS) 
+jsrootshell: jsrootshell.cxx TJSRootShellProcessLine.cxx  TJSRootShellProcessLine.h
+	$(CXX) $(CXXFLAGS) $< TJSRootShellProcessLine.cxx -o $@ $(LDFLAGS) 
 
-rootshellserver: rootshellserver.cxx TJSRootShellServer.cxx  TJSRootShellServer.h  TStdIOHandler.h
-	$(CXX) $(CXXFLAGS) $< TJSRootShellServer.cxx -o $@ $(LDFLAGS) 
 
-	
 clean:
-	rm -rf *~ *.o *.a rootshellclient rootshellserver
+	rm -rf *~ *.o *.a rootweb
+run: jsrootshell
+	./$<
