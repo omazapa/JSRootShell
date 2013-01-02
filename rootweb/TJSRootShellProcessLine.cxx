@@ -40,6 +40,8 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
     {
      
     }
+//    cout<<"cout output"<<endl;
+//    cerr<<"cerr output"<<endl;
     ioHandler.EndCapture();
 
     std::map<std::string, xmlrpc_c::value> result;

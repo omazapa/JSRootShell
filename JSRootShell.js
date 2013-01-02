@@ -98,8 +98,9 @@ function JSRootShell(id, style,logging)
 
 //       var code = "code="+encodeURI(this.currentPrompt.getCode());
 
-      var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
-      var promptid = "promptid="+this.currentPrompt.getId();
+//      var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
+      var code = this.currentPrompt.getCode();
+      var promptid = this.currentPrompt.getId();
       //initialization of xmlrequest object
       if (window.XMLHttpRequest) {
           xmlhttp = new XMLHttpRequest();
@@ -113,18 +114,17 @@ function JSRootShell(id, style,logging)
        var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
        
        var methodnametag    = msg_dom.createElement("methodName");
-       methodnametag.appendChild(msg_dom.createTextNode("sample"));
+       methodnametag.appendChild(msg_dom.createTextNode("processLine"));
        methodcalltag.appendChild(methodnametag);
        
        
        var paramstag    = msg_dom.createElement("params");
-       paramstag.appendChild(getXmlParam(msg_dom,"i4","1",null));
-       paramstag.appendChild(getXmlParam(msg_dom,"i4","1",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",promptid,null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",code,null));
 
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-//      alert(msgxmltext);
       var url = "http://localhost/rootrpc";
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
@@ -137,8 +137,15 @@ function JSRootShell(id, style,logging)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
-//                console.log(xmlhttp.responseText);
-//                console.log(xmlrep.getElementsByTagName("i4")[0].childNodes[0].nodeValue);
+                var pid    = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
+                var stderr = xmlrep.getElementsByTagName("member")[1].childNodes[2];
+                var stdout = xmlrep.getElementsByTagName("member")[2].childNodes[2];
+
+                var prompt = document.getElementById(promptid);
+                console.log(stdout.childNodes[0].textContent);
+                if(stdout) prompt.value += '\n'+stdout.childNodes[0].textContent;
+	        if(stderr) prompt.value += '\n'+stderr.childNodes[0].textContent;
+                prompt.style.height = prompt.scrollHeight + 'px';
 //                alert(xmlrep.getElementsByTagName("i4").nodeValue);
             }
          } else {

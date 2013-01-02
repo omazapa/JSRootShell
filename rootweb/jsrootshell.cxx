@@ -40,8 +40,7 @@ int main(int argc,char ** argv) {
             .portNumber(8081)
 	    .uriPath("/rootrpc"));
 	
-	myAbyssServer.runOnce();
-        myAbyssServer.run();
+	while(true){myAbyssServer.runOnce();}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;
