@@ -18,6 +18,17 @@
 #include<iostream>
 #include<fstream>
 
+
+extern "C"
+{
+#include<string.h>  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include<fcntl.h>
+}
+
+#define MAX_LEN 40
 class TStdIOHandler
 {
 public:
@@ -28,8 +39,31 @@ public:
   {
     if(!capturing)
     {
-      oldstderr = std::cerr.rdbuf(stderrbuffer.rdbuf());
-      oldstdout = std::cout.rdbuf(stdoutbuffer.rdbuf());
+      /* save stdout/stderr for display later */
+      saved_stdout = dup(STDOUT_FILENO);  
+      saved_stderr = dup(STDERR_FILENO);  
+      if( pipe(stdout_pipe) != 0 ) {          /* make a pipe for stdout*/
+         return;
+      }
+      if( pipe(stderr_pipe) != 0 ) {          /* make a pipe for stdout*/
+         return;
+      }
+
+      long flags = fcntl(stdout_pipe[0], F_GETFL); 
+      flags |= O_NONBLOCK; 
+      fcntl(stdout_pipe[0], F_SETFL, flags);
+      
+      flags = fcntl(stderr_pipe[0], F_GETFL); 
+      flags |= O_NONBLOCK; 
+      fcntl(stderr_pipe[0], F_SETFL, flags);
+      
+      dup2(stdout_pipe[1], STDOUT_FILENO);   /* redirect stdout to the pipe */
+      close(stdout_pipe[1]);
+      
+      dup2(stderr_pipe[1], STDERR_FILENO);   /* redirect stderr to the pipe */
+      close(stderr_pipe[1]);
+      
+      
       capturing = true;
     }
   }
@@ -38,34 +72,54 @@ public:
   {
     if(capturing)
     {
-      std::cout.rdbuf(oldstdout);
-      std::cerr.rdbuf(oldstderr);
+      fflush(stdout);
+      fflush(stderr);
+      int buf_readed;
+      
+      while(true)/* read from pipe into buffer */
+      {
+	buf_readed = read(stdout_pipe[0], buffer, MAX_LEN);
+	if(buf_readed<=0) break;
+	stdoutpipe += buffer;
+      }
+
+      while(true)/* read from pipe into buffer */
+      {
+	buf_readed = read(stderr_pipe[0], buffer, MAX_LEN);
+	if(buf_readed<=0) break;
+	stderrpipe += buffer;
+      }
+
+      dup2(saved_stdout, STDOUT_FILENO);  /* reconnect stdout*/
+      dup2(saved_stderr, STDERR_FILENO);  /* reconnect stderr*/
       capturing = false;
     }
   }
   
   std::string getStdout()
   {
-   return stdoutbuffer.str(); 
+      return stdoutpipe;
   }
 
   std::string getStderr()
   {
-   return stderrbuffer.str(); 
+   return stderrpipe;
   }
 
   void clear(){
-    stdoutbuffer.str("");
-    stderrbuffer.str("");
+    stdoutpipe="";
+    stderrpipe="";
   }
   
 private:
   bool capturing;
-  
-  std::stringstream stdoutbuffer;
-  std::streambuf * oldstdout;
-  
-  std::stringstream stderrbuffer;
-  std::streambuf * oldstderr;
+  //this values are to capture stdout, stderr
+  std::string    stdoutpipe;
+  std::string    stderrpipe;
+  char buffer[MAX_LEN+1];
+  int stdout_pipe[2];
+  int stderr_pipe[2];
+  int saved_stderr;
+  int saved_stdout;
 };
 #endif
