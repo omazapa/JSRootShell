@@ -109,7 +109,7 @@ function JSRootShell(id, style,logging)
        }
        //initialization of xml message
        //request types are processline, tabcompletion, history up/down
-       var msg_dom = document.implementation.createDocument(null, 'methodCall','xml');
+       var msg_dom = document.implementation.createDocument("", "methodCall",null);
        
        var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
        
