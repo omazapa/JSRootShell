@@ -46,6 +46,7 @@ function JSRootShell(id, style,logging)
 
       this.shelltable =  document.createElement('table');
       this.shelltable.setAttribute('class', 'JSRootShellTable');
+      this.shelltable.setAttribute("style", "width: 100%;");
       this.shelldiv.appendChild(this.shelltable);
 
       this.currentPrompt = new JSRootPrompt(0, this);
@@ -109,7 +110,7 @@ function JSRootShell(id, style,logging)
        }
        //initialization of xml message
        //request types are processline, tabcompletion, history up/down
-       var msg_dom = document.implementation.createDocument("", "methodCall",null);
+       var msg_dom = document.implementation.createDocument(null, "methodCall",null);
        
        var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
        
@@ -148,13 +149,13 @@ function JSRootShell(id, style,logging)
                     }
                 
                 if(stdout){
-                    if(stdout.childNodes[0].textContent.trimRight().length != 0){
+                    if(stdout.childNodes[0].textContent.trim().length != 0){
                         prompt.value += '\n'+stdout.childNodes[0].textContent;
                     } 
                 }
                 
 	        if(stderr) {
-                    if(stderr.childNodes[0].textContent.trimRight().length != 0){
+                    if(stderr.childNodes[0].textContent.trim().length != 0){
                     prompt.value += '\n'+stderr.childNodes[0].textContent;
                     }
                 }
