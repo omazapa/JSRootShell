@@ -3,6 +3,7 @@
 #include<map>
 #include<TRint.h>
 #include<TApplication.h>
+#include<TException.h>
 using namespace std;
 
 TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t logging)
@@ -35,13 +36,14 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
 
     ioHandler.clear();
     ioHandler.InitCapture();
-    
-    if(fShell->ProcessLine(code.c_str()))
-    {
+     TRY {
+	    if(fShell->ProcessLine(code.c_str(),kTRUE))
+	    {
      
-    }
-//    cout<<"cout output"<<endl;
-//    cerr<<"cerr output"<<endl;
+            }
+         } CATCH(excode) {
+            Throw(excode);
+         } ENDTRY;
     ioHandler.EndCapture();
 
     std::map<std::string, xmlrpc_c::value> result;
