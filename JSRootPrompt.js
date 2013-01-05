@@ -45,7 +45,10 @@ function JSRootPrompt(number, shell)
     	  //////////////////////
          //shell callback here//
     	 //////////////////////
-         shell.sendRequest();
+         if(shell.currentPrompt.getCode().trim()!="")
+         {           
+               shell.sendRequest();
+         }
          shell.newPrompt();
       }
    };

@@ -18,8 +18,9 @@ var _up = 38;
 var _down = 40;
 
 
-function JSRootShell(id, style,logging)
+function JSRootShell(url,id, style,logging)
 {
+   url = url || "http://localhost/rootrpc";
    id = id || "JSRootShell";
    style = style || "";
    logging = logging || true;
@@ -28,6 +29,7 @@ function JSRootShell(id, style,logging)
       document.getElementById(id).setAttribute("style", newstyle);
    };
    
+   var connecting=false;
    function isJson(jmsg) {
     try {
        var json_obj =  JSON && JSON.parse(jmsg) || $.parseJSON(jmsg);
@@ -126,7 +128,6 @@ function JSRootShell(id, style,logging)
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-      var url = "http://localhost/rootrpc";
       xmlhttp.open("POST", url, true);
       xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
       xmlhttp.send(msgxmltext);
@@ -162,6 +163,21 @@ function JSRootShell(id, style,logging)
                 prompt.style.height = prompt.scrollHeight + 'px';
 //                alert(xmlrep.getElementsByTagName("i4").nodeValue);
             }
+            if(xmlhttp.status == 503){
+                connecting=confirm("The Server is not running, do you want start it?");
+                if (connecting==true)
+		{
+		  xmlhttp.open("POST", "JSRootShellServer.php", true);
+                  xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
+                  xmlhttp.send();
+		  xmlhttp.onreadystatechange = function(){ }
+                  alert("Server is starting...");
+		}
+                else
+                {
+                  alert("Server is starting...");                    
+                }    
+	    }
          } else {
 //	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };
