@@ -56,7 +56,7 @@ function JSRootPrompt(number, shell)
 
    var prompt = document.createElement('tr');
    prompt .setAttribute('class', 'JSRootPrompt');
-   prompt.setAttribute("style", "width: 100%;");
+   prompt.setAttribute("width", "100%");
 
    var prepromptCell = document.createElement('td');
    prepromptCell.setAttribute('class', 'JSRootPrePrompt');
@@ -68,7 +68,9 @@ function JSRootPrompt(number, shell)
 
    var promptInputCell = document.createElement('td');
    promptInputCell.setAttribute('class', 'JSRootPromptCell');
-   promptInputCell.setAttribute('style', "vertical-align: top;resize: none;width: 100%;");
+   promptInputCell.setAttribute('vertical-align', 'top');
+   promptInputCell.setAttribute('resize', 'none');
+   promptInputCell.setAttribute('width', '100%;');
    var promptInput = document.createElement('textarea');
    promptInput.setAttribute('value', '');
    promptInput.select();

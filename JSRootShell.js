@@ -21,7 +21,7 @@ var _down = 40;
 function JSRootShell(id, style,logging)
 {
    id = id || "JSRootShell";
-   style = style || "border-style:none;color:#000000;background:#000000;height:50%;width: 50%;resize: both;";
+   style = style || "";
    logging = logging || true;
    var number = 0;
     this.updateStyle = function(newstyle) {
@@ -46,7 +46,7 @@ function JSRootShell(id, style,logging)
 
       this.shelltable =  document.createElement('table');
       this.shelltable.setAttribute('class', 'JSRootShellTable');
-      this.shelltable.setAttribute("style", "width: 100%;");
+      this.shelltable.setAttribute("width", "100%");
       this.shelldiv.appendChild(this.shelltable);
 
       this.currentPrompt = new JSRootPrompt(0, this);

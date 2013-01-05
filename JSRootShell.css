@@ -1,28 +1,28 @@
 
 #JSRootShell
 {
-border: 0 none white;
-color:#00FF00;
-background:#000000;
+border:5px solid gray;
+border-radius: 5px;
 height: 60%;
-width: 60%;
+width: 99%;
 overflow:auto;
+text-align: center;
+background:#DCDCDC;
 }
 
 
 .JSRootPrompt {
 border-style:none;
-color:#00FF00;
-background:#000000;
+background:#DCDCDC;
 width: 100%;
+text-align: center;
 }
 
 
 .JSRootPromptInput
 {
 border-style:   none;
-color:#00FF00;
-background:#000000;
+background:#DCDCDC;
 }
 
 /* Used for debug */
