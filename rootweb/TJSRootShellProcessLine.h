@@ -40,8 +40,6 @@
   #define SLEEP(seconds) sleep(seconds);
 #endif
 
-class TRint;
-class TApplicationRemote;
 
 class TJSRootShellProcessLine:public xmlrpc_c::method
 {
@@ -53,7 +51,6 @@ class TJSRootShellProcessLine:public xmlrpc_c::method
 private:
   TStdIOHandler ioHandler;
   Bool_t fLogging;
-  TRint  *fShell;
 };
 
 #endif

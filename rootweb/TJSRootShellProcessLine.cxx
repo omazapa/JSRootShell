@@ -1,9 +1,12 @@
 #include"TJSRootShellProcessLine.h"
 #include<iostream>
 #include<map>
+#include<vector>
 #include<TRint.h>
 #include<TApplication.h>
 #include<TException.h>
+#include <TROOT.h>
+#include <TCanvas.h>
 using namespace std;
 
 TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t logging)
@@ -11,7 +14,7 @@ TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t
   fLogging=logging;
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
   this->_help = "This method process c++ code using gROOT";
-  fShell=new TRint("jsrootshell",&argc,argv,0,0,false);
+  gROOT->SetName("JSRootShell");
 }
 
 void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
@@ -27,6 +30,9 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
     
     string code;
     string promptid;
+    Int_t canvases_size;
+    std::vector<xmlrpc_c::value> canvases_names;
+
     if(paramList.size()>0)
     {
       promptid=paramList.getString(0);
@@ -37,7 +43,7 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
     ioHandler.clear();
     ioHandler.InitCapture();
      TRY {
-	    if(fShell->ProcessLine(code.c_str(),kTRUE))
+	    if(gROOT->ProcessLineSync(code.c_str()))
 	    {
      
             }
@@ -46,15 +52,27 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
          } ENDTRY;
     ioHandler.EndCapture();
 
+    canvases_size=gROOT->GetListOfCanvases()->GetSize();
+    for(Int_t i=0;i<canvases_size;i++)
+    {
+      TCanvas *c=(TCanvas*)gROOT->GetListOfCanvases()->At(i);
+      canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
+    }
+    gROOT->GetListOfCanvases()->Print(".jpg");
     std::map<std::string, xmlrpc_c::value> result;
     
     std::pair<string, xmlrpc_c::value> promptidm("promptid", xmlrpc_c::value_string(promptid));
     std::pair<string, xmlrpc_c::value> stdoutm("stdout", xmlrpc_c::value_string(ioHandler.getStdout()));
     std::pair<string, xmlrpc_c::value> stderrm("stderr", xmlrpc_c::value_string(ioHandler.getStderr()));
+    std::pair<string, xmlrpc_c::value> canvases_sizem("canvases_size", xmlrpc_c::value_int(canvases_size));
+    std::pair<string, xmlrpc_c::value> canvases_namesm("canvases_names",xmlrpc_c::value_array(canvases_names));
+    
 
     result.insert(promptidm);
     result.insert(stdoutm);
     result.insert(stderrm);
+    result.insert(canvases_sizem);
+    result.insert(canvases_namesm);
     
     *retvalP = xmlrpc_c::value_struct(result);
 }
