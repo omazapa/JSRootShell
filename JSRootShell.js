@@ -139,16 +139,27 @@ function JSRootShell(url,id, style,logging)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
-                 var canvas     = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
-                 var canvasfile = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
-                 var pid        = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
-                 var stderr     = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
-                 var stdout     = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
+                 var canvases_names  = xmlrep.getElementsByTagName("member")[0];
+                 var canvases_size   = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
+                 var pid             = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+                 var stderr          = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
+                 var stdout          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
                  
                  var prompt = document.getElementById(promptid);
+                 
+                 canvases_size=parseInt(canvases_size);
+                 var canvases_names_array=new Array();
+                 for(i=0;i<canvases_size;i++)
+                 {
+                     var data=canvases_names.getElementsByTagName("array")[0];
+                     canvases_names_array[i]=data.getElementsByTagName("value")[i].childNodes[0].textContent;
+                 }
+                 
+                 
                  if(logging){
-                   console.log("canvas:"+canvas);
-                   console.log("canvasfile:"+canvasfile);
+                   console.log(xmlrep);  
+                   console.log("canvases_size:"+canvases_size);                   
+                   console.log("canvases_names_array:"+canvases_names_array);
                    console.log("pid:"+pid);
                    console.log("stdout:"+stdout);
                    console.log("stderr:"+stderr);
@@ -164,6 +175,11 @@ function JSRootShell(url,id, style,logging)
                     if(stderr.trim().length != 0){
                     prompt.value += '\n'+stderr;
                      }
+                 }
+                 
+                 if(canvases_size>0)
+                 {
+                         
                  }
 
                 prompt.style.height = prompt.scrollHeight + 'px';

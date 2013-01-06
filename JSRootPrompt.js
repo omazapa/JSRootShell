@@ -78,7 +78,7 @@ function JSRootPrompt(number, shell)
    promptInput.setAttribute('value', '');
    promptInput.select();
    promptInput.setAttribute('class', 'JSRootPromptInput');
-   promptInput.setAttribute('width', '100%;');
+   promptInput.setAttribute('width', '100%');
    promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;overflow:hidden;outline: none;");
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());

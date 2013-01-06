@@ -7,6 +7,7 @@
 #include<TException.h>
 #include <TROOT.h>
 #include <TCanvas.h>
+#include<TBenchmark.h>
 using namespace std;
 
 TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t logging)
@@ -15,6 +16,9 @@ TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
   this->_help = "This method process c++ code using gROOT";
   gROOT->SetName("JSRootShell");
+  if(gBenchmark==NULL){
+    gBenchmark=new TBenchmark();
+  }
 }
 
 void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
