@@ -4,10 +4,13 @@
 border:5px solid gray;
 border-radius: 5px;
 height: 60%;
-width: 99%;
+width: 70%;
 overflow:auto;
-text-align: center;
+text-align: left;
 background:#DCDCDC;
+position: absolute;
+top:280px;
+left: 15%;
 }
 
 
@@ -15,7 +18,7 @@ background:#DCDCDC;
 border-style:none;
 background:#DCDCDC;
 width: 100%;
-text-align: center;
+text-align: left;
 }
 
 
@@ -23,6 +26,7 @@ text-align: center;
 {
 border-style:   none;
 background:#DCDCDC;
+width: 100%;
 }
 
 /* Used for debug */

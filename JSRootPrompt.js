@@ -73,12 +73,13 @@ function JSRootPrompt(number, shell)
    promptInputCell.setAttribute('class', 'JSRootPromptCell');
    promptInputCell.setAttribute('vertical-align', 'top');
    promptInputCell.setAttribute('resize', 'none');
-   promptInputCell.setAttribute('width', '100%;');
+   promptInputCell.setAttribute('width', '100%');
    var promptInput = document.createElement('textarea');
    promptInput.setAttribute('value', '');
    promptInput.select();
    promptInput.setAttribute('class', 'JSRootPromptInput');
-   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;width: 100%;overflow:hidden;outline: none;");
+   promptInput.setAttribute('width', '100%;');
+   promptInput.setAttribute('style', "display: inline-block;vertical-align: top;resize: none;overflow:hidden;outline: none;");
    promptInput.setAttribute("autofocus", "autofocus");
    promptInput.setAttribute('id', this.getId());
    promptInput.addEventListener('keypress', this.keypressEvent, true);

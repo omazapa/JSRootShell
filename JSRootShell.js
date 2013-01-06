@@ -139,29 +139,34 @@ function JSRootShell(url,id, style,logging)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
-                var pid    = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
-                var stderr = xmlrep.getElementsByTagName("member")[1].childNodes[2];
-                var stdout = xmlrep.getElementsByTagName("member")[2].childNodes[2];
+                 var canvas     = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
+                 var canvasfile = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
+                 var pid        = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+                 var stderr     = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
+                 var stdout     = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
+                 
+                 var prompt = document.getElementById(promptid);
+                 if(logging){
+                   console.log("canvas:"+canvas);
+                   console.log("canvasfile:"+canvasfile);
+                   console.log("pid:"+pid);
+                   console.log("stdout:"+stdout);
+                   console.log("stderr:"+stderr);
+                  }
+                 
+                 if(stdout){
+                    if(stdout.trim().length != 0){
+                        prompt.value += '\n'+stdout;
+                     } 
+                 }
+                 
+ 	        if(stderr) {
+                    if(stderr.trim().length != 0){
+                    prompt.value += '\n'+stderr;
+                     }
+                 }
 
-                var prompt = document.getElementById(promptid);
-                if(logging){
-                   console.log("stdout:"+stdout.childNodes[0].textContent);
-                   console.log("stderr:"+stderr.childNodes[0].textContent);
-                    }
-                
-                if(stdout){
-                    if(stdout.childNodes[0].textContent.trim().length != 0){
-                        prompt.value += '\n'+stdout.childNodes[0].textContent;
-                    } 
-                }
-                
-	        if(stderr) {
-                    if(stderr.childNodes[0].textContent.trim().length != 0){
-                    prompt.value += '\n'+stderr.childNodes[0].textContent;
-                    }
-                }
                 prompt.style.height = prompt.scrollHeight + 'px';
-//                alert(xmlrep.getElementsByTagName("i4").nodeValue);
             }
             if(xmlhttp.status == 503){
                 connecting=confirm("The Server is not running, do you want start it?");
