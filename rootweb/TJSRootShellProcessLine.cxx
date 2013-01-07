@@ -19,6 +19,11 @@ TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t
   if(gBenchmark==NULL){
     gBenchmark=new TBenchmark();
   }
+   gROOT->ProcessLineSync("#include <iostream>");
+   gROOT->ProcessLineSync("#include <string>");
+   gROOT->ProcessLineSync("#include <DllImport.h>");// Defined R__EXTERN
+   gROOT->ProcessLineSync("#include <vector>");  // Needed because std::vector and std::pair are
+   gROOT->ProcessLineSync("#include <pair>");    //
 }
 
 void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
@@ -46,8 +51,9 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
 
     ioHandler.clear();
     ioHandler.InitCapture();
+    
      TRY {
-	    if(gROOT->ProcessLineSync(code.c_str()))
+	    if(gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data()))
 	    {
      
             }
