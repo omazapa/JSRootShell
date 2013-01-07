@@ -14,6 +14,12 @@
 
 function JSRootCanvasWindow(id)
 {
+   this.win = document.getElementById(id);
+   if(this.win)
+   {
+      this.winbox = this.win.childNodes[0];
+      this.url = this.winbox.src;
+   }else{
    this.win = document.createElement("div");
    this.win.setAttribute("id", id);
    this.win.setAttribute("title", id);
@@ -57,7 +63,9 @@ function JSRootCanvasWindow(id)
             $("#"+id+"-box").slideToggle("slow");
 
          };
+   }
   this.setImg = function(url){
+      this.url = url;
       this.winbox.setAttribute("src",url);
       this.winbox.onload = function(){
           $( "#"+id ).dialog( "option", "height", $("#"+id+"-box").height()+50 );
@@ -66,4 +74,11 @@ function JSRootCanvasWindow(id)
   }       
   this.show = function(){$("#"+id).dialog("open");}
   this.close = function(){$("#"+id).dialog("close");}
+  this.update = function(){
+  this.winbox.setAttribute("src",this.url);
+  this.winbox.onload = function(){
+  $( "#"+id ).dialog( "option", "height", $("#"+id+"-box").height()+50 );
+  $( "#"+id ).dialog( "option", "width", $("#"+id+"-box").width() +50);      
+  }
+    }
 };
