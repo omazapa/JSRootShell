@@ -1,5 +1,5 @@
 /*************************************************************************
-* Copyright (C) 2012,  Gfif Developers                                   *
+* Copyright (C) 2013,  Gfif Developers                                   *
 * Grupo de Fenomenologia de Interacciones Fundamentales                  *
 * http://gfif.udea.edu.co                                                *
 * División de ciencias de la computación Gfifdev                         *
@@ -98,47 +98,9 @@ function JSRootShell(url,id, style,logging)
        return paramtag;
   }
 
-   this.getCanvasWindow = function(id)
-   {
-    var win = document.getElementById(id);
-    if(!win)
-        {
-         win = document.createElement("div");
-         win.setAttribute("id", id);
-         win.setAttribute("title", id);
-         win.setAttribute("display", "none");
-         document.body.appendChild(win);
-         var dialog= $("#"+id).dialog({autoOpen: false});
-         var header = dialog.context.getElementsByClassName("ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix");
-         
-         var icon = document.createElement("a");
-         icon.setAttribute("class", "ui-dialog-title");
-         icon.setAttribute("status", "show");
-         icon.setAttribute("href", "#");
-         icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>';
-         header[0].insertBefore(icon,header[0].childNodes[0]);          
-         icon.onclick = function(){
-             var status = icon.getAttribute("status");
-             if(status == "show")
-             {
-               icon.setAttribute("status", "hide");
-               icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>';
-             }else
-             {
-               icon.setAttribute("status", "show");
-               icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>';                     
-             }
-             $("#"+id).slideToggle("slow");
-         };
-        }
-        return win;
-   }
 
    this.sendRequest = function() {
 
-//       var code = "code="+encodeURI(this.currentPrompt.getCode());
-
-//      var code = "code="+encodeURIComponent(this.currentPrompt.getCode());
       var code = this.currentPrompt.getCode();
       var promptid = this.currentPrompt.getId();
       //initialization of xmlrequest object
