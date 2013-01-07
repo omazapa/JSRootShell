@@ -27,7 +27,9 @@ function JSRootCanvasWindow(id)
    document.body.appendChild(this.win);
    this.dialog = $("#"+id).dialog({autoOpen: false,dialogClass:id}); 
    
-   var header = this.dialog.context.getElementsByClassName("ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix");
+   var widgetcode = this.dialog.context.getElementsByClassName("ui-dialog ui-widget ui-widget-content ui-corner-all "+id+" ui-draggable ui-resizable");
+   
+   var header = $(widgetcode[0]).children(".ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix");
          
    var icon = document.createElement("div");
    icon.setAttribute("class", "ui-dialog-title");
