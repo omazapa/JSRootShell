@@ -76,9 +76,5 @@ function JSRootCanvasWindow(id)
   this.close = function(){$("#"+id).dialog("close");}
   this.update = function(){
   this.winbox.setAttribute("src",this.url);
-  this.winbox.onload = function(){
-  $( "#"+id ).dialog( "option", "height", $("#"+id+"-box").height()+50 );
-  $( "#"+id ).dialog( "option", "width", $("#"+id+"-box").width() +50);      
-  }
     }
 };
