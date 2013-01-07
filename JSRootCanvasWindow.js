@@ -14,11 +14,12 @@
 
 function JSRootCanvasWindow(id)
 {
-   this.win = document.getElementById(id);
-   if(this.win)
+   var elem = document.getElementById(id);
+   if(elem)
    {
+      this.win    = elem;
       this.winbox = this.win.childNodes[0];
-      this.url = this.winbox.src;
+      this.url    = this.winbox.src;
    }else{
    this.win = document.createElement("div");
    this.win.setAttribute("id", id);
@@ -39,28 +40,28 @@ function JSRootCanvasWindow(id)
          
    var icon = document.createElement("div");
    icon.setAttribute("class", "ui-dialog-title");
-   icon.setAttribute("status", "show");
+   this.winbox.setAttribute("status", "show");
    icon.setAttribute("id", id+"accordion");
    icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>';
    header[0].insertBefore(icon,header[0].childNodes[0]);
    
    icon.onclick = function (){
-             var status = icon.getAttribute("status");
+             var status = $("#"+id+"-box").attr("status");
              if(status == "show")
              {
-               icon.setAttribute("status", "hide");
+               $("#"+id+"-box").attr("status", "hide");
                icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>';
                $( "#"+id ).dialog( "option", "height", 50 );
                $( "#"+id ).dialog( "option", "width", 50);
 
              }else
              {
-               icon.setAttribute("status", "show");
+               $("#"+id+"-box").attr("status", "show");
                icon.innerHTML = '<span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>';
                $( "#"+id ).dialog( "option", "height", $("#"+id+"-box").height()+50 );
                $( "#"+id ).dialog( "option", "width", $("#"+id+"-box").width() +50);
              }
-            $("#"+id+"-box").slideToggle("slow");
+            $("#"+id+"-box").slideToggle(0);
 
          };
    }
@@ -75,6 +76,13 @@ function JSRootCanvasWindow(id)
   this.show = function(){$("#"+id).dialog("open");}
   this.close = function(){$("#"+id).dialog("close");}
   this.update = function(){
-  this.winbox.setAttribute("src",this.url);
+      this.winbox.setAttribute("src",this.url);
+      this.winbox.onload = function(){
+          //trick to conserve the actual size of window
+          //if the img size was change it will be 
+          //adjusted.
+          $("#"+id+"-box").slideToggle(0);
+          $("#"+id+"-box").slideToggle(0);          
     }
+  }
 };

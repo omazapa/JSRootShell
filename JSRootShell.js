@@ -190,16 +190,14 @@ function JSRootShell(rpcurl,id, style,logging)
                  {
                      for(i=0;i<canvases_size;i++)
                          {
-//                               console.log(canvases_names_array[i]);
-//                               console.log(canvasurl+"/"+canvases_names_array[i]+canvasformat);
                              var win = document.getElementById(canvases_names_array[i]);
                              var c = new JSRootCanvasWindow(canvases_names_array[i]);
-                             if(!win)
-                             {                             
-                             c.setImg(canvasurl+"/"+canvases_names_array[i]+canvasformat);
-                             c.show();                                     
+                             if(win)
+                             {
+                             c.update();
                              }else{
-                             c.update();   
+                             c.setImg(canvasurl+"/"+canvases_names_array[i]+canvasformat);
+                             c.show();                             
                              }
                              
                          }
