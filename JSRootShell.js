@@ -192,9 +192,13 @@ function JSRootShell(rpcurl,id, style,logging)
                          {
 //                               console.log(canvases_names_array[i]);
 //                               console.log(canvasurl+"/"+canvases_names_array[i]+canvasformat);
+                             var win = document.getElementById(canvases_names_array[i]);
+                             if(!win)
+                             {
                              var c = new JSRootCanvasWindow(canvases_names_array[i]);
                              c.setImg(canvasurl+"/"+canvases_names_array[i]+canvasformat);
-                             c.show();
+                             c.show();                                     
+                             }
                          }
                  }
 
