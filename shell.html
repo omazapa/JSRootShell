@@ -24,14 +24,16 @@
     
 <div id="ServerStatus"> </div>
 <script language="javascript">
-
-var RootShell = new JSRootShell();
+//rpc_url and baseurl
+var RootShell = new JSRootShell("http://localhost/rootrpc");
+RootShell.setCanvasUrl("http://localhost/root/rootweb/");
+RootShell.setCanvasFormat(".png");
 RootShell.Init();
 
 //$("#c2").dialog("open");
-  JSRootCanvasWindow = new JSRootCanvasWindow("c2");
-  JSRootCanvasWindow.setImg("http://localhost/root/rootweb/c1.jpg");
-  JSRootCanvasWindow.show();
+//  c = new JSRootCanvasWindow("c2");
+//  c.setImg("http://localhost/root/rootweb/c1.jpg");
+//  c.show();
 //$(".ui-dialog-titlebar").hide() 
 </script>
 

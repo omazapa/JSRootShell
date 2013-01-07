@@ -17,10 +17,12 @@ var _delete = 46;
 var _up = 38;
 var _down = 40;
 
+var canvasurl = "";
+var canvasformat = "";
 
-function JSRootShell(url,id, style,logging)
+function JSRootShell(rpcurl,id, style,logging)
 {
-   url = url || "http://localhost/rootrpc";
+   rpcurl = rpcurl || "http://localhost/rootrpc";
    id = id || "JSRootShell";
    style = style || "";
    logging = logging || true;
@@ -29,6 +31,14 @@ function JSRootShell(url,id, style,logging)
       document.getElementById(id).setAttribute("style", newstyle);
    };
    
+   this.setCanvasUrl = function(url){
+       canvasurl = url;
+   }
+
+   this.setCanvasFormat = function(format){
+       canvasformat = format;
+   }
+
    var connecting=false;
    function isJson(jmsg) {
     try {
@@ -127,7 +137,7 @@ function JSRootShell(url,id, style,logging)
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-      xmlhttp.open("POST", url, true);
+      xmlhttp.open("POST", rpcurl, true);
       xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
       xmlhttp.send(msgxmltext);
       if(logging) console.log("Send JSON's XmlHttpMessage: "+msgxmltext);
@@ -178,7 +188,14 @@ function JSRootShell(url,id, style,logging)
                  
                  if(canvases_size>0)
                  {
-                         
+                     for(i=0;i<canvases_size;i++)
+                         {
+//                               console.log(canvases_names_array[i]);
+//                               console.log(canvasurl+"/"+canvases_names_array[i]+canvasformat);
+                             var c = new JSRootCanvasWindow(canvases_names_array[i]);
+                             c.setImg(canvasurl+"/"+canvases_names_array[i]+canvasformat);
+                             c.show();
+                         }
                  }
 
                 prompt.style.height = prompt.scrollHeight + 'px';

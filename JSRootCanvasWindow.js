@@ -14,6 +14,12 @@
 
 function JSRootCanvasWindow(id)
 {
+   this.win = document.getElementById(id);
+   if(this.win){
+//       $("#"+id).dialog("destroy");
+//       this.win.parentNode.removeChild(this.win);
+    return;
+   }
    this.win = document.createElement("div");
    this.win.setAttribute("id", id);
    this.win.setAttribute("title", id);

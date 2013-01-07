@@ -62,7 +62,7 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
       TCanvas *c=(TCanvas*)gROOT->GetListOfCanvases()->At(i);
       canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
     }
-    gROOT->GetListOfCanvases()->Print(".jpg");
+    gROOT->GetListOfCanvases()->Print(".png");
     std::map<std::string, xmlrpc_c::value> result;
     
     std::pair<string, xmlrpc_c::value> promptidm("promptid", xmlrpc_c::value_string(promptid));
