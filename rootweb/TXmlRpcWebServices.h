@@ -11,11 +11,10 @@
 * For the list of contributors see $ROOTSYS/README/CREDITS.              *
 *************************************************************************/
 
-#ifndef JSRoot_Shell_Process_Line
-#define JSRoot_Shell_Process_Line
+#ifndef ROOT_TXmlRpcWebServices
+#define ROOT_TXmlRpcWebServices
 
 
-#include"TStdIOHandler.h"
 
 #define WIN32_LEAN_AND_MEAN 
 
@@ -30,17 +29,26 @@
 
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/registry.hpp>
+#include "TStdIOHandler.h"
+class TThread;
 
-class TJSRootShellProcessLine:public xmlrpc_c::method
+class TXmlRpcWebServices:public xmlrpc_c::method
 {
   public:
-    TJSRootShellProcessLine(int argc,char **argv,bool logging=true);
-    void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
+    TXmlRpcWebServices(int argc,char **argv,bool logging=true);
+    ~TXmlRpcWebServices();
+    void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
     
+    void StartEngine(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
+    void StopEngine(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
+    void StartEngineShell(xmlrpc_c::value *const  retvalP);
+    static void StartEngineShellThread(void *prt);
     
 private:
-  TStdIOHandler ioHandler;
   bool fLogging;
+  TThread *fShellThread;
+  static bool gShellStarted;
+  static TStdIOHandler ioHandler;
 };
 
 #endif

@@ -10,7 +10,7 @@
 #include<TBenchmark.h>
 using namespace std;
 
-TJSRootShellProcessLine::TJSRootShellProcessLine(Int_t argc,Char_t **argv,Bool_t logging)
+TJSRootShellProcessLine::TJSRootShellProcessLine(int argc,char **argv,bool logging)
 {
   fLogging=logging;
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
@@ -53,10 +53,7 @@ void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrp
     ioHandler.InitCapture();
     
      TRY {
-	    if(gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data()))
-	    {
-     
-            }
+            gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data());
          } CATCH(excode) {
             Throw(excode);
          } ENDTRY;
