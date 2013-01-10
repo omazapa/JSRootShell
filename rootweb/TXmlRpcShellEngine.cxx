@@ -1,4 +1,4 @@
-#include"TJSRootShellProcessLine.h"
+#include"TXmlRpcShellEngine.h"
 #include<iostream>
 #include<map>
 #include<vector>
@@ -10,7 +10,7 @@
 #include<TBenchmark.h>
 using namespace std;
 
-TJSRootShellProcessLine::TJSRootShellProcessLine(int argc,char **argv,bool logging)
+TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
 {
   fLogging=logging;
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
@@ -26,14 +26,14 @@ TJSRootShellProcessLine::TJSRootShellProcessLine(int argc,char **argv,bool loggi
    gROOT->ProcessLineSync("#include <pair>");    //
 }
 
-void TJSRootShellProcessLine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
+void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
 {
    if(fLogging){
-     cout<<"TJSRootShellProcessLine: paramList Size: "<<paramList.size()<<endl;
+     cout<<"TXmlRpcShellEngine: paramList Size: "<<paramList.size()<<endl;
      if(paramList.size()>1)
      {
-     cout<<"                       : paramList String PormptID: "<<paramList.getString(0)<<endl;  
-     cout<<"                       : paramList String Code:     "<<paramList.getString(1)<<endl;  
+     cout<<"                  : paramList String PormptID: "<<paramList.getString(0)<<endl;  
+     cout<<"                  : paramList String Code:     "<<paramList.getString(1)<<endl;  
      }
     }
     

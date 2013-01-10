@@ -11,8 +11,8 @@
 * For the list of contributors see $ROOTSYS/README/CREDITS.              *
 *************************************************************************/
 
-#ifndef JSRoot_Shell_Process_Line
-#define JSRoot_Shell_Process_Line
+#ifndef ROOT_TXmlRpcShellEngine
+#define ROOT_TXmlRpcShellEngine
 
 
 #include"TStdIOHandler.h"
@@ -31,10 +31,10 @@
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/registry.hpp>
 
-class TJSRootShellProcessLine:public xmlrpc_c::method
+class TXmlRpcShellEngine:public xmlrpc_c::method
 {
   public:
-    TJSRootShellProcessLine(int argc,char **argv,bool logging=true);
+    TXmlRpcShellEngine(int argc,char **argv,bool logging=true);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     
     

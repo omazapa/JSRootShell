@@ -28,7 +28,7 @@ int main(int argc,char ** argv) {
 
     try {
         xmlrpc_c::registry registry;
-// 	registry.setDialect(xmlrpc_dialect_apache);
+	registry.setDialect(xmlrpc_dialect_apache);
 
         xmlrpc_c::methodPtr const WebServicesP(new TXmlRpcWebServices(argc,argv,true));
 
@@ -38,7 +38,7 @@ int main(int argc,char ** argv) {
             xmlrpc_c::serverAbyss::constrOpt()
             .registryP(&registry)
             .portNumber(8081)
-	    .uriPath("/rootrpc"));
+	    .uriPath("/rootrpcadmin"));
 	
 	while(true){myAbyssServer.runOnce();}
         assert(false);

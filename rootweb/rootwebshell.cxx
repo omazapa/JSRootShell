@@ -21,7 +21,7 @@ using namespace std;
   #define SLEEP(seconds) sleep(seconds);
 #endif
 
-#include"TJSRootShellProcessLine.h"
+#include"TXmlRpcShellEngine.h"
 
 
 int main(int argc,char ** argv) {
@@ -30,15 +30,15 @@ int main(int argc,char ** argv) {
         xmlrpc_c::registry registry;
 // 	registry.setDialect(xmlrpc_dialect_apache);
 
-        xmlrpc_c::methodPtr const processLineMethodP(new TJSRootShellProcessLine(argc,argv,true));
+        xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(argc,argv,true));
 
-        registry.addMethod("processLine", processLineMethodP);
+        registry.addMethod("ShellEngine", ShellEngineP);
         
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
             .registryP(&registry)
-            .portNumber(8081)
-	    .uriPath("/rootrpc"));
+            .portNumber(8082)
+	    .uriPath("/rootrpcshell"));
 	
 	while(true){myAbyssServer.runOnce();}
         assert(false);

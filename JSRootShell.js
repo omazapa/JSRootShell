@@ -126,7 +126,7 @@ function JSRootShell(rpcurl,id, style,logging)
        var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
        
        var methodnametag    = msg_dom.createElement("methodName");
-       methodnametag.appendChild(msg_dom.createTextNode("processLine"));
+       methodnametag.appendChild(msg_dom.createTextNode("ShellEngine"));
        methodcalltag.appendChild(methodnametag);
        
        

@@ -113,7 +113,7 @@ void TXmlRpcWebServices::StartEngineShellThread(void *prt)
 {
  ioHandler.clear();
  ioHandler.InitCapture();
- gShellStarted=gSystem->Exec("./jsrootshell");
+ gShellStarted=gSystem->Exec("./rootwebshell");
  ioHandler.EndCapture();
  cout<<"stderr = "<<ioHandler.getStderr()<<endl;
  cout<<"stdout = "<<ioHandler.getStdout()<<endl;
