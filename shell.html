@@ -7,21 +7,67 @@
 <meta name="author" content="Omar Andres Zapata Mesa" />
 <meta name="email" content="andresete.chaos@gmail.com" />
 <meta name="Description" content="ROOT's Shell for web " />
- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
- <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
- <script type="text/javascript" src="http://root.cern.ch/js/scripts/JSRootInterface.js"></script>
+
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+ 
+<!-- Menu bar imports  -->
+<link href="http://view.jqueryui.com/menubar/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css"/>
+
+<script type="text/javascript" src="http://view.jqueryui.com/menubar/ui/jquery.ui.menubar.js"></script>
+ 
+<script type="text/javascript" src="http://root.cern.ch/js/scripts/JSRootInterface.js"></script>
 <script language="javascript" src="JSRootPrompt.js"></script>
 <script language="javascript" src="JSRootShell.js"></script>
 <script language="javascript" src="JSRootCanvasWindow.js"></script>
+
 </head>
 
 <body >
+
 <div style="text-align: center;">
-<img src="img/root.jpg" width="400px" height="200" alt="Image" />
+<!-- Menu bar -->
+<ul class="JSRootMenuBar">
+
+	<li>
+		<a href="#Session">Session</a>
+		<ul>
+			<li><a href="#Quit">Quit</a></li>
+		</ul>
+	</li>
+
+	<li>
+		<a href="#Engine">Engine</a>
+		<ul>
+			<li>
+				<a href="#Shell">Shell</a>
+				<ul>
+					<li><a href="#Start">Start</a></li>
+					<li><a href="#Stop">Stop</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#Proof">Proof</a>
+				<ul>
+					<li><a href="#Start">Start</a></li>
+					<li><a href="#Stop">Stop</a></li>
+				</ul>
+			</li>
+
+			<li>
+				<a href="#RootMpi">RootMpi</a>
+				<ul>
+					<li><a href="#Start">Start</a></li>
+					<li><a href="#Stop">Stop</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li><a href="#About">About</a></li>
+	<img class="JSRootLogo" src="img/root.jpg" alt="Image" />
+</ul>
 
 </div>
-
-    
 <div id="ServerStatus"> </div>
 <script language="javascript">
 //rpc_url and baseurl
@@ -30,14 +76,34 @@ RootShell.setCanvasUrl("http://localhost/root/rootweb/");
 RootShell.setCanvasFormat(".png");
 RootShell.Init();
 
-//$("#c2").dialog("open");
-//  c = new JSRootCanvasWindow("c2");
-//  c.setImg("http://localhost/root/rootweb/c1.jpg");
-//  c.show();
+//code to create a jquerydialog
+// var e=document.getElementById("JSRootShell");
+// var d=document.createElement("div");
+// d.setAttribute("class","JSRootDialog");
+// d.appendChild(e);
+// document.body.appendChild(d);
+// $(".JSRootDialog").dialog();
+// e.style.top = "0px";
+// e.style.left = "1%";
+// e.style.width = "96%";
+// e.style.hight = "100%";
+// e.style.padding-top = "25px";
+// e.style.padding-bottom = "25px";
+// e.style.padding-right = "50px";
+// e.style.padding-left = "50px";
+
 //$(".ui-dialog-titlebar").hide() 
 </script>
 
-
-
+<script language="javascript">
+$(function() {
+		$(".JSRootMenuBar").menubar({
+			autoExpand: true,
+			menuIcon: true,
+			buttons: true,
+		});
+		});
+</script>
 </body>
+
 </html>
