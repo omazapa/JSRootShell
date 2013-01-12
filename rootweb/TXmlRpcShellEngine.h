@@ -22,6 +22,8 @@
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
+#include <map>
+#include <string>
 #ifdef _WIN32
 #  include <windows.h>
 #else
@@ -31,16 +33,38 @@
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/registry.hpp>
 
+#include<map>
+
+class TApplicationRemoteShell;
+
+class TXmlRpcShellEngineUser
+{
+private:
+  TApplicationRemoteShell *fShell;
+  std::string fToken;
+  std::string fUser;
+  TStdIOHandler ioHandler;
+public:
+  TXmlRpcShellEngineUser(std::string user,std::string passwd);
+  ~TXmlRpcShellEngineUser();
+  bool IsValid();
+  std::string GetToken();
+  void ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
+};
+
 class TXmlRpcShellEngine:public xmlrpc_c::method
 {
   public:
     TXmlRpcShellEngine(int argc,char **argv,bool logging=true);
+    void ProcessLine(std::string user,std::string id,std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
+    void Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     
     
 private:
   TStdIOHandler ioHandler;
   bool fLogging;
+  std::map<std::string,TXmlRpcShellEngineUser*> fUsersShell;
 };
 
 #endif
