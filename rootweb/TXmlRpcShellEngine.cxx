@@ -8,7 +8,12 @@
 #include <TROOT.h>
 #include <TCanvas.h>
 #include<TBenchmark.h>
+#include"TApplicationRemoteShell.h"
+#include<TSystem.h>
 using namespace std;
+
+
+
 
 TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
 {
@@ -24,6 +29,7 @@ TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
    gROOT->ProcessLineSync("#include <DllImport.h>");// Defined R__EXTERN
    gROOT->ProcessLineSync("#include <vector>");  // Needed because std::vector and std::pair are
    gROOT->ProcessLineSync("#include <pair>");    //
+   gROOT->SetApplication(new TApplicationRemoteShell("rootjs@gfifdev.udea.edu.co","qazsewq"));
 }
 
 void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)

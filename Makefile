@@ -5,19 +5,19 @@ SRCDIR   = rootweb
 
 all:$(SRCDIR)/rootwebshell $(SRCDIR)/rootweb
 
-$(SRCDIR)/rootwebshell: $(SRCDIR)/rootwebshell.cxx $(SRCDIR)/TXmlRpcShellEngine.cxx  $(SRCDIR)/TXmlRpcShellEngine.h
-	$(CXX) $(CXXFLAGS) $< $(SRCDIR)/TXmlRpcShellEngine.cxx -o $@ $(LDFLAGS) 
+$(SRCDIR)/rootwebshell: $(SRCDIR)/rootwebshell.cxx $(SRCDIR)/TXmlRpcShellEngine.cxx $(SRCDIR)/TApplicationRemoteShell.cxx $(SRCDIR)/TXmlRpcShellEngine.h
+	$(CXX) $(CXXFLAGS) $< $(SRCDIR)/TXmlRpcShellEngine.cxx $(SRCDIR)/TApplicationRemoteShell.cxx -o $@ $(LDFLAGS) 
 
-$(SRCDIR)/rootweb:$(SRCDIR)/rootweb.cxx $(SRCDIR)/TXmlRpcWebServices.cxx $(SRCDIR)/TXmlRpcWebServices.h
+$(SRCDIR)/rootweb:$(SRCDIR)/rootweb.cxx $(SRCDIR)/TXmlRpcWebServices.cxx  $(SRCDIR)/TXmlRpcWebServices.h
 	$(CXX) $(CXXFLAGS) $< $(SRCDIR)/TXmlRpcWebServices.cxx -o $@ $(LDFLAGS) 
 
 	
 clean:
 	find . -name "*~" -exec rm '{}' \;
 	find . -name "*.o" -exec rm '{}' \;
-	rm $(SRCDIR)/rootweb $(SRCDIR)/rootwebshell
+	rm -f $(SRCDIR)/rootweb $(SRCDIR)/rootwebshell
 	
 runwebshell: $(SRCDIR)/jsrootshell
-	.//$<
+	./$<
 runweb:$(SRCDIR)/rootweb
 	./$<
