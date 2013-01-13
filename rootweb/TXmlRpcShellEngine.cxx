@@ -22,7 +22,7 @@ if(IsValid())
 {
 TString token(user);
 token+=gRandom->Integer(1e8);
-fToken=TUUID(token.Data()).AsString();
+fSessionID=TUUID(token.Data()).AsString();
 }
 }
 
@@ -36,9 +36,9 @@ bool TXmlRpcShellEngineUser::IsValid()
 return fShell->IsValid(); 
 }
 
-std::string TXmlRpcShellEngineUser::GetToken()
+std::string TXmlRpcShellEngineUser::GetSessionID()
 {
-    return fToken;
+    return fSessionID;
 }
 
 void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP)
@@ -46,6 +46,7 @@ void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,x
     Int_t canvases_size;
     std::vector<xmlrpc_c::value> canvases_names;
     gROOT->SetApplication(fShell);
+    bool userdir=gSystem->cd(fUser.c_str());
     ioHandler.clear();
     ioHandler.InitCapture();
     
@@ -63,6 +64,7 @@ void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,x
       canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
     }
     gROOT->GetListOfCanvases()->Print(".png");
+    if(userdir) gSystem->cd("..");
     std::map<std::string, xmlrpc_c::value> result;
     
     std::pair<string, xmlrpc_c::value> promptidm("promptid", xmlrpc_c::value_string(promptid));
@@ -106,7 +108,7 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
     if(paramList.size()>0)
      {
      action=paramList.getString(0);
-     cout<<"                  : paramList String Action: "<<action<<endl;  
+     if(fLogging){     cout<<"                  : paramList String Action: "<<action<<endl;  }
      }else{
        paramList.verifyEnd(1);
     }
@@ -114,8 +116,13 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
     if(action == "Login")
     {
       paramList.verifyEnd(3);
+      
       string user=paramList.getString(1);
       string passwd=paramList.getString(2);
+      if(fLogging){     
+	cout<<"                  : paramList String User: "<<user<<endl;  
+	cout<<"                  : paramList String Passwd: "<<passwd<<endl;  
+      }
       Login(user,passwd,retvalP);
     }    
     
@@ -137,33 +144,30 @@ void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::val
  TXmlRpcShellEngineUser *euser=new TXmlRpcShellEngineUser(user,passwd);
  ioHandler.EndCapture();
  std::map<std::string, xmlrpc_c::value> result;
+ std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(euser->IsValid()));
+ std::pair<string, xmlrpc_c::value> sessionidm("sessionid", xmlrpc_c::value_string(euser->GetSessionID().c_str()));
+ 
+ result.insert(statusm);
+ result.insert(sessionidm);
  if(euser->IsValid())
  {
  fUsersShell[user]=euser;
  TString tuser(user);
  tuser.ReplaceAll("@","-");
  gSystem->mkdir(tuser.Data());
- std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(true));
- std::pair<string, xmlrpc_c::value> tokenidm("tokenid", xmlrpc_c::value_string(euser->GetToken().c_str()));
- result.insert(statusm);
- result.insert(tokenidm);
- *retvalP=xmlrpc_c::value_struct(result);
  }else{
  delete euser;
- std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(false));
- result.insert(statusm);
- *retvalP=xmlrpc_c::value_struct(result);
 }
- 
+ *retvalP=xmlrpc_c::value_struct(result); 
 }
 
-void TXmlRpcShellEngine::ProcessLine(string user,string tokenid,string promptid,string code,xmlrpc_c::value *   const  retvalP)
+void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string promptid,string code,xmlrpc_c::value *   const  retvalP)
 {
 //if user found
 if(fUsersShell.find(user) != fUsersShell.end())
 {
   //validating token id 
-  if(fUsersShell[user]->GetToken() == tokenid)
+  if(fUsersShell[user]->GetSessionID() == sessionid)
   {
    
     if(fUsersShell[user]->IsValid())

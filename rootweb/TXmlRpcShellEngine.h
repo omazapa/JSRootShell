@@ -41,14 +41,14 @@ class TXmlRpcShellEngineUser
 {
 private:
   TApplicationRemoteShell *fShell;
-  std::string fToken;
+  std::string fSessionID;
   std::string fUser;
   TStdIOHandler ioHandler;
 public:
   TXmlRpcShellEngineUser(std::string user,std::string passwd);
   ~TXmlRpcShellEngineUser();
   bool IsValid();
-  std::string GetToken();
+  std::string GetSessionID();
   void ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
 };
 
@@ -56,7 +56,7 @@ class TXmlRpcShellEngine:public xmlrpc_c::method
 {
   public:
     TXmlRpcShellEngine(int argc,char **argv,bool logging=true);
-    void ProcessLine(std::string user,std::string id,std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
+    void ProcessLine(std::string user,std::string sessionid,std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
     void Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     

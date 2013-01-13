@@ -16,52 +16,72 @@ function JSRootShellLogin(rpcurl,id,logging)
    rpcurl = "http://localhost/rootrpcshell";
    id = id || "JSRootShellLogin";
    logging = logging || true;
-
+   var sessionid;
+   var username;
+   var status;
+   var ready=function(){};
+   
+   //form elements
+   var logindivstatus;
+   var loginbutton;
+   var logindiv;
+   var loginpassword;
+   var loginusername;
+   var dialog;
+   
+   this.ready = function(callback){
+     ready=callback;
+  }//this method is a callback that was called when the user is ready logged
+   
    this.Init = function() {
-      this.logindiv = document.createElement('div');
-      this.logindiv.setAttribute('class', 'JSRootShellLogin');
-      this.logindiv.setAttribute('id', id);
+      logindiv = document.createElement('div');
+      logindiv.setAttribute('class', 'JSRootShellLogin');
+      logindiv.setAttribute('id', id);
 
 
-      this.loginusernamelabel =  document.createElement('label');
-      this.loginusernamelabel.setAttribute('for', 'JSRootShellLoginUserName');
-      this.loginusernamelabel.innerHTML += "Username\n";
-      this.logindiv.appendChild(this.loginusernamelabel);
+      var loginusernamelabel =  document.createElement('label');
+      loginusernamelabel.setAttribute('for', 'JSRootShellLoginUserName'+id);
+      loginusernamelabel.innerHTML += 'Username\n';
+      logindiv.appendChild(loginusernamelabel);
 
-      this.loginusername =  document.createElement('input');
-      this.loginusername.setAttribute('id', 'JSRootShellLoginUserName');
-      this.loginusername.setAttribute('class', 'JSRootShellLoginUserName');
-      this.loginusername.setAttribute("width", "100%");
-      this.logindiv.appendChild(this.loginusername);
+      loginusername =  document.createElement('input');
+      loginusername.setAttribute('id', 'JSRootShellLoginUserName'+id);
+      loginusername.setAttribute('class', 'JSRootShellLoginUserName');
+      loginusername.setAttribute('width', '100%');
+//       loginusername.setAttribute('value', 'omazapa@localhos');
+      logindiv.appendChild(loginusername);
 
-      this.loginpasswordlabel =  document.createElement('label');
-      this.loginpasswordlabel.setAttribute('for', 'JSRootShellLoginPassword');
-      this.loginpasswordlabel.innerHTML += "\nPassword\n";
-      this.logindiv.appendChild(this.loginpasswordlabel);
+      var loginpasswordlabel =  document.createElement('label');
+      loginpasswordlabel.setAttribute('for', 'JSRootShellLoginPassword'+id);
+      loginpasswordlabel.innerHTML += '\nPassword\n';
+      logindiv.appendChild(loginpasswordlabel);
       
-      this.loginpassword =  document.createElement('input');
-      this.loginpassword.setAttribute('id', 'JSRootShellLoginPassword');
-      this.loginpassword.setAttribute('class', 'JSRootShellLoginPassword');
-      this.loginpassword.setAttribute('type', 'password');
-      this.loginpassword.setAttribute("width", "100%");
-      this.logindiv.appendChild(this.loginpassword);
+      loginpassword =  document.createElement('input');
+      loginpassword.setAttribute('id', 'JSRootShellLoginPassword'+id);
+      loginpassword.setAttribute('class', 'JSRootShellLoginPassword');
+      loginpassword.setAttribute('type', 'password');
+      loginpassword.setAttribute('width', '100%');
+      logindiv.appendChild(loginpassword);
 
-      this.loginbutton =  document.createElement('input');
-      this.loginbutton.setAttribute('id', 'JSRootShellLoginSubmit');
-      this.loginbutton.setAttribute('class', 'JSRootShellLoginSubmit');
-      this.loginbutton.setAttribute('type', 'submit')
-      this.loginbutton.setAttribute('value', 'Connect');;
-      this.loginbutton.setAttribute('style', 'border:5px solid gray;border-radius: 4px;');
-      this.logindiv.appendChild(this.loginbutton);
-
+      loginbutton =  document.createElement('input');
+      loginbutton.setAttribute('id', 'JSRootShellLoginSubmit'+id);
+      loginbutton.setAttribute('class', 'JSRootShellLoginSubmit');
+      loginbutton.setAttribute('type', 'submit')
+      loginbutton.setAttribute('value', 'Connect');;
+      loginbutton.addEventListener('click', this.sendRequest, true);
+      logindiv.appendChild(loginbutton);
+      
+      logindivstatus = document.createElement('img');
+      logindivstatus.setAttribute('class', 'JSRootShellLoginStatus'+id);
+      logindivstatus.setAttribute('id', id);
+      logindivstatus.setAttribute('src', 'img/loader.gif');
+      logindivstatus.setAttribute('style', 'padding-top:10px');
+      
+      document.body.appendChild(logindiv);
       
       
-      
-      document.body.appendChild(this.logindiv);
-      
-      
-      this.dialog = $("#"+id).dialog({closeOnEscape: false,title: "Login",resizable: false,dialogClass: id});
-      this.dialog.context.getElementsByClassName("ui-dialog-titlebar-close")[0].setAttribute("style","visibility: hidden");
+      dialog = $("#"+id).dialog({closeOnEscape: false,title: "Login",resizable: false,dialogClass: id});
+      dialog.context.getElementsByClassName("ui-dialog-titlebar-close")[0].setAttribute("style","visibility: hidden");
    };
     
   /*
@@ -98,9 +118,15 @@ function JSRootShellLogin(rpcurl,id,logging)
 
    //this request is a request to authenticate
    this.sendRequest = function() {
-
-      var code = this.currentPrompt.getCode();
-      var promptid = this.currentPrompt.getId();
+          
+      username = loginusername.value;
+      var password = loginpassword.value;
+      console.log(password)
+      logindiv.removeChild(loginbutton);
+      logindiv.appendChild(logindivstatus);
+      
+      
+      
       //initialization of xmlrequest object
       if (window.XMLHttpRequest) {
           xmlhttp = new XMLHttpRequest();
@@ -119,16 +145,17 @@ function JSRootShellLogin(rpcurl,id,logging)
        
        
        var paramstag    = msg_dom.createElement("params");
-       paramstag.appendChild(getXmlParam(msg_dom,"string",promptid,null));
-       paramstag.appendChild(getXmlParam(msg_dom,"string",code,null));
-
+       paramstag.appendChild(getXmlParam(msg_dom,"string","Login",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",username,null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",password,null));
+       
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
-      xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
+      xmlhttp.setRequestHeader("Content-Type","text/xml; charset=utf-8");
       xmlhttp.send(msgxmltext);
-      if(logging) console.log("Send JSON's XmlHttpMessage: "+msgxmltext);
+      if(logging) console.log("Send XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {
 	  console.log("The request timed out.");
 	}
@@ -136,78 +163,29 @@ function JSRootShellLogin(rpcurl,id,logging)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
-                 var canvases_names  = xmlrep.getElementsByTagName("member")[0];
-                 var canvases_size   = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
-                 var pid             = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
-                 var stderr          = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
-                 var stdout          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
-                 
-                 var prompt = document.getElementById(promptid);
-                 
-                 canvases_size=parseInt(canvases_size);
-                 var canvases_names_array=new Array();
-                 for(i=0;i<canvases_size;i++)
-                 {
-                     var data=canvases_names.getElementsByTagName("array")[0];
-                     canvases_names_array[i]=data.getElementsByTagName("value")[i].childNodes[0].textContent;
-                 }
-                 
-                 
                  if(logging){
                    console.log(xmlrep);  
-                   console.log("canvases_size:"+canvases_size);                   
-                   console.log("canvases_names_array:"+canvases_names_array);
-                   console.log("pid:"+pid);
-                   console.log("stdout:"+stdout);
-                   console.log("stderr:"+stderr);
                   }
-                 
-                 if(stdout){
-                    if(stdout.trim().length != 0){
-                        prompt.value += '\n'+stdout;
-                     } 
+                    status = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
+                    sessionid  = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
+		    if(parseInt(status) == false)
+		    {
+		           logindiv.removeChild(logindivstatus);
+                           logindiv.appendChild(loginbutton);
+		    }else
+		    {
+		       dialog.remove();
+		       ready();
+		    }
                  }
                  
- 	        if(stderr) {
-                    if(stderr.trim().length != 0){
-                    prompt.value += '\n'+stderr;
-                     }
-                 }
-                 
-                 if(canvases_size>0)
-                 {
-                     for(i=0;i<canvases_size;i++)
-                         {
-                             var win = document.getElementById(canvases_names_array[i]);
-                             var c = new JSRootCanvasWindow(canvases_names_array[i]);
-                             if(win)
-                             {
-                             c.update();
-                             }else{
-                             c.setImg(canvasurl+"/"+canvases_names_array[i]+canvasformat);
-                             c.show();                             
-                             }
-                             
-                         }
-                 }
-
-                prompt.style.height = prompt.scrollHeight + 'px';
-            }
-            if(xmlhttp.status == 503){
-                connecting=confirm("The Server is not running, do you want start it?");
-                if (connecting==true)
-		{
-		  xmlhttp.open("POST", "JSRootShellServer.php", true);
-                  xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
-                  xmlhttp.send();
-		  xmlhttp.onreadystatechange = function(){ }
-                  alert("Server is starting...");
-		}
-                else
-                {
-                  alert("Server is starting...");                    
+           if(xmlhttp.status == 503){
+                  alert("ROOT XmlRpc Shell Engine is not running\nUrl:"+rpcurl);
+                  logindiv.removeChild(logindivstatus);
+                  logindiv.appendChild(loginbutton);
                 }    
-	    }
+
+            
          } else {
 //	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };
