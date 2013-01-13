@@ -19,7 +19,7 @@ function JSRootShellLogin(rpcurl,id,logging)
    var sessionid;
    var username;
    var status;
-   var ready=function(){};
+   var shell = null;
    
    //form elements
    var logindivstatus;
@@ -28,10 +28,21 @@ function JSRootShellLogin(rpcurl,id,logging)
    var loginpassword;
    var loginusername;
    var dialog;
+ 
+   this.SetShell = function(_shell){
+     shell=_shell;
+    }//this method is a callback that was called when the user is ready logged
    
-   this.ready = function(callback){
-     ready=callback;
-  }//this method is a callback that was called when the user is ready logged
+   this.GetSessionID = function(){
+     return sessionid;
+  }
+   this.GetUserName = function(){
+     return username;
+  }
+  this.GetStatus = function()
+  {
+      return status;
+  }
    
    this.Init = function() {
       logindiv = document.createElement('div');
@@ -48,7 +59,7 @@ function JSRootShellLogin(rpcurl,id,logging)
       loginusername.setAttribute('id', 'JSRootShellLoginUserName'+id);
       loginusername.setAttribute('class', 'JSRootShellLoginUserName');
       loginusername.setAttribute('width', '100%');
-//       loginusername.setAttribute('value', 'omazapa@localhos');
+      loginusername.setAttribute('value', 'omazapa@localhost');
       logindiv.appendChild(loginusername);
 
       var loginpasswordlabel =  document.createElement('label');
@@ -174,8 +185,14 @@ function JSRootShellLogin(rpcurl,id,logging)
                            logindiv.appendChild(loginbutton);
 		    }else
 		    {
+		      if(shell != null)
+		      {
 		       dialog.remove();
-		       ready();
+		       shell.Init(username,sessionid);			
+		      }else
+		      {
+			alert("Error Login: JSRootShell's object is not set to init.");
+		      }
 		    }
                  }
                  

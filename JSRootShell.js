@@ -26,8 +26,16 @@ function JSRootShell(rpcurl,id, style,logging)
    id = id || "JSRootShell";
    style = style || "";
    logging = logging || true;
+   
+   //promptid
    var number = 0;
-    this.updateStyle = function(newstyle) {
+   
+   //session information
+   var username=null;
+   var sessionid=null;
+   var shell=this;
+   
+   this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
    };
    
@@ -49,8 +57,10 @@ function JSRootShell(rpcurl,id, style,logging)
     }
     return true;
    }
-
-   this.Init = function() {
+   
+   this.Init = function(_username,_sessionid) {
+      username=_username;
+      sessionid=_sessionid;
       this.shelldiv = document.createElement('div');
       this.shelldiv.setAttribute('class', 'JSRootShell');
       this.shelldiv.setAttribute('id', id);
@@ -131,6 +141,9 @@ function JSRootShell(rpcurl,id, style,logging)
        
        
        var paramstag    = msg_dom.createElement("params");
+       paramstag.appendChild(getXmlParam(msg_dom,"string","ProcessLine",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",username,null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",sessionid,null));
        paramstag.appendChild(getXmlParam(msg_dom,"string",promptid,null));
        paramstag.appendChild(getXmlParam(msg_dom,"string",code,null));
 

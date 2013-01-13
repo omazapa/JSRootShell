@@ -130,10 +130,17 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
     {
       paramList.verifyEnd(5);
       string user=paramList.getString(1);
-      string tokenid=paramList.getString(2);
+      string sessionid=paramList.getString(2);
       string promptid=paramList.getString(3);
       string code=paramList.getString(4);
-      ProcessLine(user,tokenid,promptid,code,retvalP);
+      if(fLogging){     
+	cout<<"                  : paramList String User:      "<<user<<endl;  
+	cout<<"                  : paramList String SessionID: "<<sessionid<<endl;
+	cout<<"                  : paramList String PromptID:  "<<promptid<<endl;
+	cout<<"                  : paramList String Code:      "<<code<<endl;	
+      }
+
+      ProcessLine(user,sessionid,promptid,code,retvalP);
     }
 }
 

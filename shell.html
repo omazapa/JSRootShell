@@ -17,9 +17,12 @@
 <script type="text/javascript" src="http://view.jqueryui.com/menubar/ui/jquery.ui.menubar.js"></script>
  
 <script type="text/javascript" src="http://root.cern.ch/js/scripts/JSRootInterface.js"></script>
+<script language="javascript" src="JSRootShellLogin.js"></script>
 <script language="javascript" src="JSRootPrompt.js"></script>
 <script language="javascript" src="JSRootShell.js"></script>
 <script language="javascript" src="JSRootCanvasWindow.js"></script>
+
+
 
 </head>
 
@@ -27,7 +30,7 @@
 
 <div style="text-align: center;">
 <!-- Menu bar -->
-<ul class="JSRootMenuBar">
+<!--<ul class="JSRootMenuBar">
 
 	<li>
 		<a href="#Session">Session</a>
@@ -65,16 +68,20 @@
 	</li>
 	<li><a href="#About">About</a></li>
 	<img class="JSRootLogo" src="img/root.jpg" alt="Image" />
-</ul>
+</ul>-->
 
 </div>
-<div id="ServerStatus"> </div>
+<!-- <div id="ServerStatus"> </div> -->
 <script language="javascript">
+var rpcurl = "http://localhost/rootrpcshell";
+var RootShellLogin = new JSRootShellLogin(rpcurl);
+RootShellLogin.Init();
+
 //rpc_url and baseurl
-var RootShell = new JSRootShell("http://localhost/rootrpcshell");
+var RootShell = new JSRootShell(rpcurl);
 RootShell.setCanvasUrl("http://localhost/root/rootweb/");
 RootShell.setCanvasFormat(".png");
-RootShell.Init();
+RootShellLogin.SetShell(RootShell);
 
 //code to create a jquerydialog
 // var e=document.getElementById("JSRootShell");
