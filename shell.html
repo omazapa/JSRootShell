@@ -17,7 +17,9 @@
 <script type="text/javascript" src="http://view.jqueryui.com/menubar/ui/jquery.ui.menubar.js"></script>
  
 <script type="text/javascript" src="http://root.cern.ch/js/scripts/JSRootInterface.js"></script>
+<script language="javascript" src="shortcut.js"></script>
 <script language="javascript" src="JSRootShellLogin.js"></script>
+<script language="javascript" src="JSRootShellBar.js"></script>
 <script language="javascript" src="JSRootPrompt.js"></script>
 <script language="javascript" src="JSRootShell.js"></script>
 <script language="javascript" src="JSRootCanvasWindow.js"></script>
@@ -30,10 +32,14 @@
 
 <div style="text-align: center;">
 <!-- Menu bar -->
+<script language="javascript">
+var RootShellBar=new JSRootShellBar;
+RootShellBar.Init();
+</script>
 <!--<ul class="JSRootMenuBar">
 
 	<li>
-		<a href="#Session">Session</a>
+		<a>Session</a>
 		<ul>
 			<li><a href="#Quit">Quit</a></li>
 		</ul>
@@ -103,13 +109,14 @@ RootShellLogin.SetShell(RootShell);
 </script>
 
 <script language="javascript">
-$(function() {
-		$(".JSRootMenuBar").menubar({
-			autoExpand: true,
-			menuIcon: true,
-			buttons: true,
-		});
-		});
+
+// $(function() {
+// 		$(".JSRootMenuBar").menubar({
+// 			autoExpand: true,
+// 			menuIcon: true,
+// 			buttons: true,
+// 		});
+// 		});
 </script>
 </body>
 

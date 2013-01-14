@@ -35,6 +35,8 @@ function JSRootShell(rpcurl,id, style,logging)
    var sessionid=null;
    var shell=this;
    
+   var history;
+   
    this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
    };
@@ -45,17 +47,6 @@ function JSRootShell(rpcurl,id, style,logging)
 
    this.setCanvasFormat = function(format){
        canvasformat = format;
-   }
-
-   var connecting=false;
-   function isJson(jmsg) {
-    try {
-       var json_obj =  JSON && JSON.parse(jmsg) || $.parseJSON(jmsg);
-    } catch (e) {
-       console.error("Error: parsing json message = "+e);
-        return false;
-    }
-    return true;
    }
    
    this.Init = function(_username,_sessionid) {
@@ -161,11 +152,13 @@ function JSRootShell(rpcurl,id, style,logging)
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
+		 console.log(xmlrep);
                  var canvases_names  = xmlrep.getElementsByTagName("member")[0];
                  var canvases_size   = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
-                 var pid             = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
-                 var stderr          = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
-                 var stdout          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
+		 var errorcode       = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+                 var pid             = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
+                 var stderr          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
+                 var stdout          = xmlrep.getElementsByTagName("member")[5].childNodes[2].textContent;
                  
                  var prompt = document.getElementById(promptid);
                  
@@ -182,6 +175,7 @@ function JSRootShell(rpcurl,id, style,logging)
                    console.log(xmlrep);  
                    console.log("canvases_size:"+canvases_size);                   
                    console.log("canvases_names_array:"+canvases_names_array);
+		   console.log("errorcode:"+errorcode);
                    console.log("pid:"+pid);
                    console.log("stdout:"+stdout);
                    console.log("stderr:"+stderr);
@@ -217,21 +211,11 @@ function JSRootShell(rpcurl,id, style,logging)
                  }
 
                 prompt.style.height = prompt.scrollHeight + 'px';
+		return parseInt(errorcode);
             }
             if(xmlhttp.status == 503){
-                connecting=confirm("The Server is not running, do you want start it?");
-                if (connecting==true)
-		{
-		  xmlhttp.open("POST", "JSRootShellServer.php", true);
-                  xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
-                  xmlhttp.send();
-		  xmlhttp.onreadystatechange = function(){ }
-                  alert("Server is starting...");
-		}
-                else
-                {
-                  alert("Server is starting...");                    
-                }    
+                  alert("Server is not running!!\nUrl: "+rpcurl);
+		  return 3;
 	    }
          } else {
 //	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);

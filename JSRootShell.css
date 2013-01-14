@@ -50,12 +50,7 @@ background:#DCDCDC;
 width: 100%;
 }
 
-.JSRootMenuBar
-{
-border:2px solid gray;
-border-radius: 5px;
-margin: 0 0 4em;
-}
+
 /* Used for debug */
 /*table{
   border-style:solid;

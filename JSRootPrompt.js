@@ -1,9 +1,8 @@
 /*************************************************************************
-* Copyright (C) 2012,  Gfif Developers                                   *
+* Copyright (C) 2012-2013,  Gfif Developers                              *
 * Grupo de Fenomenologia de Interacciones Fundamentales                  *
 * http://gfif.udea.edu.co                                                *
 * División de ciencias de la computación Gfifdev                         *
-* http://gfifdev.udea.edu.co                                             *
 * Created and Maintained By Omar Andres Zapata Mesa                      *
 * All rights reserved.                                                   *
 *                                                                        *
@@ -16,13 +15,14 @@ var _enter = 13;
 var _delete = 46;
 var _up = 38;
 var _down = 40;
+var _shift = 16;
 
 function JSRootPrompt(number, shell)
 {
    // line number in prompt
    number = number || "0";
    number = number.toString();
-
+   
    function adjustPrompt() {
       promptInput.style.height = promptInput.scrollHeight + 'px';
    }
@@ -32,25 +32,6 @@ function JSRootPrompt(number, shell)
       //adjust the promot in text area with every event//
       ///////////////////////////////////////////////////
       adjustPrompt();
-
-      var key;
-      if (window.event) {
-         key = event.keyCode;
-      } else {
-    	 //added tu support firefox
-         key = e.charCode || e.keyCode || e.which;
-      }
-
-      if (key == _enter) {
-    	  //////////////////////
-         //shell callback here//
-    	 //////////////////////
-         if(shell.currentPrompt.getCode().trim()!="")
-         {           
-               shell.sendRequest();
-         }
-         shell.newPrompt();
-      }
    };
 
    this.getId = function() {
@@ -88,7 +69,25 @@ function JSRootPrompt(number, shell)
 
    promptInputCell.appendChild(promptInput);
    prompt.appendChild(promptInputCell);
+   shortcut.add("Shitf+Enter",function() {},{
+	'type':'keydown',
+	'propagate':true,
+	'target':promptInput});
+   shortcut.add("Enter",function() {
+     if(shell.currentPrompt.getCode().trim()!="")
+         {           
+               if(shell.sendRequest()!=0)
+	       {
+                 shell.newPrompt(); 
+	       }	 
+         }
 
+  },{
+	'type':'keydown',
+	'propagate':true,
+	'target':promptInput});
+
+   
    this.getElement = function() {
       return prompt;
    };

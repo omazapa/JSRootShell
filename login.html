@@ -33,6 +33,15 @@
 var RootShellLogin = new JSRootShellLogin("http://localhost/rootrpcshell");
 RootShellLogin.Init();
 
+var isCtrl = false;$(document).keydown(function (e) {
+    if(e.which == 17) isCtrl=true;
+    if(e.which == 83 && isCtrl == true) {
+        isCtrl = false;
+        alert('Keyboard shortcuts + JQuery are even more cool!');
+ 	return false;
+ }
+});
+
 </script>
 </body>
 
