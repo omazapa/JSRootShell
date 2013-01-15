@@ -13,7 +13,7 @@
 
 function JSRootShellLogin(rpcurl,id,shell,logging)
 {
-   rpcurl = "http://localhost/rootrpcshell";
+   rpcurl =rpcurl || "http://localhost/rootrpcshell";
    id = id || "JSRootShellLogin";
    logging = logging || true;
    var sessionid;
@@ -160,7 +160,8 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
-      xmlhttp.setRequestHeader("Content-Type","text/xml; charset=utf-8");
+      xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+//       xmlhttp.setRequestHeader("Content-Type","text/xml; charset=utf-8");
       xmlhttp.send(msgxmltext);
       if(logging) console.log("Send XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {

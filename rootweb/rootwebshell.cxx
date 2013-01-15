@@ -24,7 +24,7 @@ using namespace std;
 
 #include"TXmlRpcShellEngine.h"
 
-
+#include <unistd.h>
 
 int main(int argc,char ** argv) {
 
@@ -34,6 +34,7 @@ int main(int argc,char ** argv) {
 	
 	registry.setDialect(xmlrpc_dialect_apache);
 
+
         xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(argc,argv,true));
 
         registry.addMethod("ShellEngine", ShellEngineP);
@@ -41,12 +42,15 @@ int main(int argc,char ** argv) {
 	 
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
+	    .allowOrigin("http://localhost")
             .registryP(&registry)
             .portNumber(8082)
 	    .uriPath("/rootrpcshell"));
 // 	myAbyssServer.run();
 	
-	while(true){myAbyssServer.runOnce();}
+	while(true){
+	  myAbyssServer.runOnce();	  
+	}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;

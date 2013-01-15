@@ -152,7 +152,8 @@ function JSRootShell(rpcurl,id, style,logging)
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
-      xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
+      xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+//       xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
       xmlhttp.send(msgxmltext);
       if(logging) console.log("Send JSON's XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {

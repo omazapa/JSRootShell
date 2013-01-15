@@ -3,14 +3,14 @@
 {
 border:5px solid gray;
 border-radius: 5px;
-height: 60%;
-width: 70%;
+height: 80%;
+width: 90%;
 overflow:auto;
 text-align: left;
 background:#DCDCDC;
 position: absolute;
-top:80px;
-left: 15%;
+top:70px;
+left: 5%;
 }
 
 
