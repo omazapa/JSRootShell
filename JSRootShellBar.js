@@ -11,7 +11,7 @@
 * For the list of contributors see $ROOTSYS/README/CREDITS.              *
 *************************************************************************/
 
-function JSRootShellBar(rpcurl,id,logging)
+function JSRootShellBar(rpcurl,id,shell,logging)
 {
    rpcurl = "http://localhost/rootrpcshell";
    id = id || "JSRootShellBar";
@@ -34,6 +34,7 @@ function JSRootShellBar(rpcurl,id,logging)
    //    </ul>
    
    this.Init = function() {
+      if(!shell) {alert("Error: JSRootMenuBar has not JSRootShell's object (shell) asigned."); return;}
       var bardiv = document.createElement('div');
       bardiv.setAttribute('class', 'JSRootShellBar');
       bardiv.setAttribute('id', id);
@@ -52,6 +53,7 @@ function JSRootShellBar(rpcurl,id,logging)
       var barsessionquitcontainer =  document.createElement('li');
       var barsessionquit =  document.createElement('a');
       barsessionquit.innerHTML = "Quit";
+      barsessionquitcontainer.addEventListener('click', this.Quit, true);
       
       barsessionquitcontainer.appendChild(barsessionquit);
       barsessioncontainer.appendChild(barsessionquitcontainer);
@@ -99,6 +101,9 @@ function JSRootShellBar(rpcurl,id,logging)
      var aboutmsg = document.createElement('div');
      
      var aboutmsgtext = "Copyright (C) 2013, Omar Andres Zapata Mesa<br>";
+     aboutmsgtext    += "Grupo de Fenomenologia de Interacciones Fundamentales <br>";
+     aboutmsgtext    += "<a href='http://gfif.udea.edu.co/web/JSRootShell'  target='_blank'>http://gfif.udea.edu.co/web/JSRootShell</a><br>";
+     aboutmsgtext    += "División de ciencias de la computación Gfifdev <br>";
      aboutmsgtext    += "For the license see $ROOTSYS/README/LICENSE. <br>";
      aboutmsgtext    += "For the list of contributors see $ROOTSYS/README/CREDITS."
      aboutmsg.innerHTML = "<h5 style='color:#585858'>"+aboutmsgtext+"</h5>";

@@ -33,8 +33,8 @@
 <div style="text-align: center;">
 <!-- Menu bar -->
 <script language="javascript">
-var RootShellBar=new JSRootShellBar;
-RootShellBar.Init();
+// var RootShellBar=new JSRootShellBar;
+// RootShellBar.Init();
 </script>
 <!--<ul class="JSRootMenuBar">
 
@@ -80,14 +80,14 @@ RootShellBar.Init();
 <!-- <div id="ServerStatus"> </div> -->
 <script language="javascript">
 var rpcurl = "http://localhost/rootrpcshell";
-var RootShellLogin = new JSRootShellLogin(rpcurl);
-RootShellLogin.Init();
+// var RootShellLogin = new JSRootShellLogin(rpcurl);
+// RootShellLogin.Init();
 
 //rpc_url and baseurl
 var RootShell = new JSRootShell(rpcurl);
 RootShell.setCanvasUrl("http://localhost/root/rootweb/");
 RootShell.setCanvasFormat(".png");
-RootShellLogin.SetShell(RootShell);
+RootShell.Init();
 
 //code to create a jquerydialog
 // var e=document.getElementById("JSRootShell");

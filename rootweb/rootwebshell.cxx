@@ -11,6 +11,7 @@
 
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/registry.hpp>
+#include <xmlrpc-c/server_pstream.hpp>
 #include <xmlrpc-c/server_abyss.hpp>
 
 using namespace std;
@@ -24,21 +25,26 @@ using namespace std;
 #include"TXmlRpcShellEngine.h"
 
 
+
 int main(int argc,char ** argv) {
 
     try {
         xmlrpc_c::registry registry;
-// 	registry.setDialect(xmlrpc_dialect_apache);
+	registry.disableIntrospection();
+	
+	registry.setDialect(xmlrpc_dialect_apache);
 
         xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(argc,argv,true));
 
         registry.addMethod("ShellEngine", ShellEngineP);
         
+	 
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
             .registryP(&registry)
             .portNumber(8082)
 	    .uriPath("/rootrpcshell"));
+// 	myAbyssServer.run();
 	
 	while(true){myAbyssServer.runOnce();}
         assert(false);

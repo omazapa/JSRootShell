@@ -1,5 +1,6 @@
-CXXFLAGS = -I/usr/include/root -I. -g -Wall
-LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -lNet -lRint -lxmlrpc++ -lxmlrpc_server++ -lxmlrpc_server_abyss++ -lxmlrpc_server_pstream++ -lxmlrpc_server_abyss++ -lpthread
+CXXFLAGS = -I/usr/include/root -I/opt/xmlrpc/include -I. -g -Wall
+LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -L/opt/xmlrpc/lib -lNet -lRint -lxmlrpc  -lxmlrpc++  -lxmlrpc_abyss  -lxmlrpc_client  -lxmlrpc_client++  -lxmlrpc_cpp  -lxmlrpc_packetsocket  -lxmlrpc_server  -lxmlrpc_server++  -lxmlrpc_server_abyss  -lxmlrpc_server_abyss++  -lxmlrpc_server_cgi  -lxmlrpc_server_cgi++  -lxmlrpc_server_pstream++  -lxmlrpc_util  -lxmlrpc_xmlparse  -lxmlrpc_xmltok -lpthread  
+#-lxmlrpc++ -lxmlrpc_server++ -lxmlrpc_server++ -lxmlrpc_server_abyss++ -lxmlrpc_packetsocket -lxmlrpc_server_pstream++ -lxmlrpc_server_abyss++ -lpthread
 AR       = ar rcs
 SRCDIR   = rootweb
 
@@ -15,9 +16,12 @@ $(SRCDIR)/rootweb:$(SRCDIR)/rootweb.cxx $(SRCDIR)/TXmlRpcWebServices.cxx  $(SRCD
 clean:
 	find . -name "*~" -exec rm '{}' \;
 	find . -name "*.o" -exec rm '{}' \;
+	rm -f $(SRCDIR)/*.png
 	rm -f $(SRCDIR)/rootweb $(SRCDIR)/rootwebshell
+
+run:runwebshell
 	
-runwebshell: $(SRCDIR)/jsrootshell
+runwebshell: $(SRCDIR)/rootwebshell
 	./$<
 runweb:$(SRCDIR)/rootweb
 	./$<

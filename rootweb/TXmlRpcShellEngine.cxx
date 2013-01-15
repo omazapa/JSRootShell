@@ -50,11 +50,10 @@ void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,x
     bool userdir=gSystem->cd(fUser.c_str());
     ioHandler.clear();
     ioHandler.InitCapture();
-    
      TRY {
-            gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
+           gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
          } CATCH(excode) {
-            Throw(excode);
+           Throw(excode);
          } ENDTRY;
     ioHandler.EndCapture();
 

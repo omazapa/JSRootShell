@@ -1,0 +1,6 @@
+1) javascript session class JSRootShellSession to manage session information like session id, heartbeat, expiration time,etc..
+2) in javascript menu support multiple profiles like login and session.
+3) in server added expiration time for inactivity.
+4) set timeout in athentication system
+5) set reuqest in a thread to support multiple user request in a poll
+

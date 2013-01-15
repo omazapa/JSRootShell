@@ -36,6 +36,10 @@ function JSRootShell(rpcurl,id, style,logging)
    var shell=this;
    
    var history;
+
+   
+   var login = new JSRootShellLogin(rpcurl,id+"Login",this,logging);
+   var bar = new JSRootShellBar(rpcurl,id+"Bar",this,logging);
    
    this.updateStyle = function(newstyle) {
       document.getElementById(id).setAttribute("style", newstyle);
@@ -50,6 +54,12 @@ function JSRootShell(rpcurl,id, style,logging)
    }
    
    this.Init = function(_username,_sessionid) {
+     
+      if(!login.IsLogged()){
+	login.Init();
+	return;
+      }
+      bar.Init();
       username=_username;
       sessionid=_sessionid;
       this.shelldiv = document.createElement('div');

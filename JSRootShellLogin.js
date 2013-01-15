@@ -11,15 +11,14 @@
 * For the list of contributors see $ROOTSYS/README/CREDITS.              *
 *************************************************************************/
 
-function JSRootShellLogin(rpcurl,id,logging)
+function JSRootShellLogin(rpcurl,id,shell,logging)
 {
    rpcurl = "http://localhost/rootrpcshell";
    id = id || "JSRootShellLogin";
    logging = logging || true;
    var sessionid;
    var username;
-   var status;
-   var shell = null;
+   var status=false;
    
    //form elements
    var logindivstatus;
@@ -29,9 +28,6 @@ function JSRootShellLogin(rpcurl,id,logging)
    var loginusername;
    var dialog;
  
-   this.SetShell = function(_shell){
-     shell=_shell;
-    }//this method is a callback that was called when the user is ready logged
    
    this.GetSessionID = function(){
      return sessionid;
@@ -39,7 +35,7 @@ function JSRootShellLogin(rpcurl,id,logging)
    this.GetUserName = function(){
      return username;
   }
-  this.GetStatus = function()
+  this.IsLogged = function()
   {
       return status;
   }
@@ -181,6 +177,7 @@ function JSRootShellLogin(rpcurl,id,logging)
                     sessionid  = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
 		    if(parseInt(status) == false)
 		    {
+		           status = false
 		           logindiv.removeChild(logindivstatus);
                            logindiv.appendChild(loginbutton);
 		    }else
@@ -188,15 +185,18 @@ function JSRootShellLogin(rpcurl,id,logging)
 		      if(shell != null)
 		      {
 		       dialog.remove();
+		       status=true;
 		       shell.Init(username,sessionid);			
 		      }else
 		      {
+ 		        status=false;
 			alert("Error Login: JSRootShell's object is not set to init.");
 		      }
 		    }
                  }
                  
            if(xmlhttp.status == 503){
+		  status=false;
                   alert("ROOT XmlRpc Shell Engine is not running\nUrl:"+rpcurl);
                   logindiv.removeChild(logindivstatus);
                   logindiv.appendChild(loginbutton);
