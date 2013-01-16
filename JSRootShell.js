@@ -119,6 +119,10 @@ function JSRootShell(rpcurl,id, style,logging)
        return paramtag;
   }
 
+  function error(){    
+          alert("Error: can not connect to \n"+rpcurl+"\nRestart shell engine\nor fix you url for rpc server.");
+	  return;
+  }  
 
    this.sendRequest = function() {
 
@@ -153,8 +157,9 @@ function JSRootShell(rpcurl,id, style,logging)
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-//       xmlhttp.setRequestHeader( "Content-Type", "text/xml; charset=utf-8" );
-      xmlhttp.send(msgxmltext);
+      xmlhttp.upload.addEventListener("error", error, false);
+      xmlhttp.send(msgxmltext);	
+
       if(logging) console.log("Send JSON's XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {
 	  console.log("The request timed out.");

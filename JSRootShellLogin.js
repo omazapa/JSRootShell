@@ -123,6 +123,13 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
        return paramtag;
   }
 
+  function error(){    
+          alert("Error: can not connect to \n"+rpcurl+"\nStart shell engine first\nor fix you url for rpc server.");
+	  logindiv.removeChild(logindivstatus);
+          logindiv.appendChild(loginbutton);
+	  return;
+  }  
+
    //this request is a request to authenticate
    this.sendRequest = function() {
           
@@ -159,10 +166,11 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-      xmlhttp.open("POST", rpcurl, true);
-      xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-//       xmlhttp.setRequestHeader("Content-Type","text/xml; charset=utf-8");
-      xmlhttp.send(msgxmltext);
+       xmlhttp.open("POST", rpcurl, true);
+       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+       xmlhttp.upload.addEventListener("error", error, false);
+       xmlhttp.send(msgxmltext);
+
       if(logging) console.log("Send XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {
 	  console.log("The request timed out.");
