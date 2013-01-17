@@ -54,7 +54,8 @@ function JSRootShell(rpcurl,id, style,logging)
    }
    
    this.Logout = function(){
-    login.sendLogoutRequest(); 
+      login.sendLogoutRequest();
+      bar.Close();
     }
    
    this.Init = function(_username,_sessionid) {

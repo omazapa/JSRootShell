@@ -16,7 +16,7 @@ function JSRootShellBar(rpcurl,id,shell,logging)
    rpcurl = "http://localhost/rootrpcshell";
    id = id || "JSRootShellBar";
    logging = logging || true;      
-   
+   var bardiv;
    
    //example of menu bar structure
    //    <ul id="xxx" class="JSRootMenuBar">
@@ -30,7 +30,7 @@ function JSRootShellBar(rpcurl,id,shell,logging)
    
    this.Init = function() {
       if(!shell) {alert("Error: JSRootMenuBar has not JSRootShell's object (shell) asigned."); return;}
-      var bardiv = document.createElement('div');
+      bardiv = document.createElement('div');
       bardiv.setAttribute('class', 'JSRootShellBar');
       bardiv.setAttribute('id', id);
 
@@ -49,7 +49,7 @@ function JSRootShellBar(rpcurl,id,shell,logging)
       var barsessionquit =  document.createElement('a');
       barsessionquit.innerHTML = "Logout";
       barsessionquitcontainer.addEventListener('click', shell.Logout, true);
-      
+
       barsessionquitcontainer.appendChild(barsessionquit);
       barsessioncontainer.appendChild(barsessionquitcontainer);
       barsession.appendChild(barsessioncontainer);
@@ -81,6 +81,10 @@ function JSRootShellBar(rpcurl,id,shell,logging)
 			menuIcon: true,
 			buttons: true,});
    };
+   
+   this.Close = function(){
+     document.body.removeChild(bardiv);
+  }
    
    
    var seed=0;

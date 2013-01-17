@@ -175,9 +175,9 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
 		    }else
 		    {
 		      status=false;
-		      document.body.appendChild(shell.shelldiv);
-// 		      Init();
-                      alert(message);
+		      document.body.removeChild(shell.shelldiv);
+		      shell.Init();
+//                       alert(message);
 		    }
                  }
                  
