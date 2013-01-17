@@ -45,19 +45,28 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
       logindiv.setAttribute('class', 'JSRootShellLogin');
       logindiv.setAttribute('id', id);
 
+      
 
       var loginusernamelabel =  document.createElement('label');
       loginusernamelabel.setAttribute('for', 'JSRootShellLoginUserName'+id);
       loginusernamelabel.innerHTML += 'Username\n';
       logindiv.appendChild(loginusernamelabel);
 
+      
       loginusername =  document.createElement('input');
       loginusername.setAttribute('id', 'JSRootShellLoginUserName'+id);
       loginusername.setAttribute('class', 'JSRootShellLoginUserName');
-      loginusername.setAttribute('width', '100%');
+      loginusername.setAttribute('width', '80%');
       loginusername.setAttribute('value', 'omazapa@localhost');
       logindiv.appendChild(loginusername);
 
+      loginlogo = document.createElement('img');
+      loginlogo.setAttribute('class', 'JSRootShellLoginLogo');
+      loginlogo.setAttribute('id', id);
+      loginlogo.setAttribute('src', 'img/rootmin.gif');
+      logindiv.appendChild(loginlogo);
+
+      
       var loginpasswordlabel =  document.createElement('label');
       loginpasswordlabel.setAttribute('for', 'JSRootShellLoginPassword'+id);
       loginpasswordlabel.innerHTML += '\nPassword\n';
@@ -67,7 +76,7 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
       loginpassword.setAttribute('id', 'JSRootShellLoginPassword'+id);
       loginpassword.setAttribute('class', 'JSRootShellLoginPassword');
       loginpassword.setAttribute('type', 'password');
-      loginpassword.setAttribute('width', '100%');
+      loginpassword.setAttribute('width', '80%');
       logindiv.appendChild(loginpassword);
 
       loginbutton =  document.createElement('input');

@@ -25,6 +25,20 @@ opacity:0.9;
 filter:alpha(opacity=40);
 }
 
+.JSRootShellLoginLogo
+{
+width:14%;
+height:50%;
+border:2px solid gray;
+border-radius: 2px;
+position:absolute;
+top:20%;
+right:2%;
+/* text-align:right; */
+/* align:right; */
+/* left:80%; */
+}
+
 
 .JSRootLogo{
 border:2px solid gray;
