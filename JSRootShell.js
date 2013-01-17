@@ -53,6 +53,10 @@ function JSRootShell(rpcurl,id, style,logging)
        canvasformat = format;
    }
    
+   this.Logout = function(){
+    login.sendLogoutRequest(); 
+    }
+   
    this.Init = function(_username,_sessionid) {
      
       if(!login.IsLogged()){

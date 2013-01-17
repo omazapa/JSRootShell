@@ -75,7 +75,7 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
       loginbutton.setAttribute('class', 'JSRootShellLoginSubmit');
       loginbutton.setAttribute('type', 'submit')
       loginbutton.setAttribute('value', 'Connect');;
-      loginbutton.addEventListener('click', this.sendRequest, true);
+      loginbutton.addEventListener('click', this.sendLoginRequest, true);
       logindiv.appendChild(loginbutton);
       
       logindivstatus = document.createElement('img');
@@ -128,10 +128,75 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
 	  logindiv.removeChild(logindivstatus);
           logindiv.appendChild(loginbutton);
 	  return;
-  }  
+  }
+  
+  this.sendLogoutRequest = function(){
+      //initialization of xmlrequest object
+      if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+       } else {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+       }
+       //initialization of xml message
+       //request types are processline, tabcompletion, history up/down
+       var msg_dom = document.implementation.createDocument(null, "methodCall",null);
+       
+       var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
+       
+       var methodnametag    = msg_dom.createElement("methodName");
+       methodnametag.appendChild(msg_dom.createTextNode("ShellEngine"));
+       methodcalltag.appendChild(methodnametag);
+       
+       
+       var paramstag    = msg_dom.createElement("params");
+       paramstag.appendChild(getXmlParam(msg_dom,"string","Logout",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",username,null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",sessionid,null));
+       
+       methodcalltag.appendChild(paramstag);
+
+      var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
+       xmlhttp.open("POST", rpcurl, true);
+       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+       xmlhttp.upload.addEventListener("error", error, false);
+       xmlhttp.send(msgxmltext);
+       xmlhttp.onreadystatechange = function(event) {
+         if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+           	var xmlrep =  xmlhttp.responseXML;
+                 if(logging){
+                   console.log(xmlrep);  
+                  }
+                    mstatus = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
+                    message  = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
+		    if(parseInt(mstatus) == false)
+		    {
+		       alert(message);
+		    }else
+		    {
+		      status=false;
+		      document.body.appendChild(shell.shelldiv);
+// 		      Init();
+                      alert(message);
+		    }
+                 }
+                 
+           if(xmlhttp.status == 503){
+		  status=false;
+                  alert("ROOT XmlRpc Shell Engine is not running\nUrl:"+rpcurl);
+                  logindiv.removeChild(logindivstatus);
+                  logindiv.appendChild(loginbutton);
+                }    
+
+            
+         } else {
+//	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+         };
+      };
+  }
 
    //this request is a request to authenticate
-   this.sendRequest = function() {
+   this.sendLoginRequest = function() {
           
       username = loginusername.value;
       var password = loginpassword.value;
@@ -174,6 +239,8 @@ function JSRootShellLogin(rpcurl,id,shell,logging)
       if(logging) console.log("Send XmlHttpMessage: "+msgxmltext);
       xmlhttp.ontimeout = function() {
 	  console.log("The request timed out.");
+          logindiv.removeChild(logindivstatus);
+          logindiv.appendChild(loginbutton);
 	}
       xmlhttp.onreadystatechange = function(event) {
          if (xmlhttp.readyState == 4) {

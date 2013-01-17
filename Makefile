@@ -22,6 +22,6 @@ clean:
 run:runwebshell
 	
 runwebshell: $(SRCDIR)/rootwebshell
-	./$<
+	LD_LIBRARY_PATH=/opt/xmlrpc/lib/ ./$<
 runweb:$(SRCDIR)/rootweb
-	./$<
+	LD_LIBRARY_PATH=/opt/xmlrpc/lib/ ./$<

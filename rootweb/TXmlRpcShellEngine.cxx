@@ -122,10 +122,23 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
       string passwd=paramList.getString(2);
       if(fLogging){     
 	cout<<"                  : paramList String User: "<<user<<endl;  
-	cout<<"                  : paramList String Passwd: "<<passwd<<endl;  
       }
       Login(user,passwd,retvalP);
     }    
+
+    if(action == "Logout")
+    {
+      paramList.verifyEnd(3);
+      
+      string user=paramList.getString(1);
+      string sessionid=paramList.getString(2);
+      if(fLogging){     
+	cout<<"                  : paramList String User: "<<user<<endl;  
+	cout<<"                  : paramList String SessionID: "<<sessionid<<endl;  
+      }
+      Logout(user,sessionid,retvalP);
+    }    
+    
     
     if(action == "ProcessLine")
     {
@@ -167,6 +180,38 @@ void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::val
  delete euser;
 }
  *retvalP=xmlrpc_c::value_struct(result); 
+}
+
+void TXmlRpcShellEngine::Logout(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP)
+{
+//if user found
+std::map<std::string, xmlrpc_c::value> result;
+std::pair<string, xmlrpc_c::value> statusm;
+std::pair<string, xmlrpc_c::value> messagem;
+statusm.first="status";
+messagem.first = "message";
+
+if(fUsersShell.find(user) != fUsersShell.end())
+{
+  //validating token id 
+  if(fUsersShell[user]->GetSessionID() == sessionid)
+  {
+    fUsersShell.erase(user);
+    statusm.second = xmlrpc_c::value_boolean(true);
+
+    messagem.second = xmlrpc_c::value_string("User logged out");
+  }else{
+    statusm.second = xmlrpc_c::value_boolean(false);
+    messagem.second = xmlrpc_c::value_string("Error: bad session id");
+  }
+}else{
+    statusm.second = xmlrpc_c::value_boolean(false);
+    messagem.second = xmlrpc_c::value_string("Error: user not found");
+}
+
+result.insert(statusm);
+result.insert(messagem);
+*retvalP=xmlrpc_c::value_struct(result);
 }
 
 void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string promptid,string code,xmlrpc_c::value *   const  retvalP)
