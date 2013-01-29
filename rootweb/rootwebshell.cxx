@@ -3,6 +3,10 @@
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
+extern "C"
+{
+#include <stdlib.h>  
+}
 #ifdef _WIN32
 #  include <windows.h>
 #else
@@ -25,8 +29,51 @@ using namespace std;
 #include"TXmlRpcShellEngine.h"
 
 #include <unistd.h>
+#include <TString.h>
+#include <TError.h>
 
-int main(int argc,char ** argv) {
+int main(int argc,char ** argv)
+{
+    int port=8082;
+    string server_master = "http://localhost:8081";
+    string uriPath = "/rootrpcshell";
+    string origin = "http://localhost";
+    
+    //options are -P=port -S=master server  -U=uriPath -O=origin(cross site authorization)
+      TString arg;
+      for(int i=1;i<argc;i++)
+      {
+	arg=argv[i];
+	if(arg(2,2)!="=")
+	{
+	  Error("rootwebshell","Bad command line parameter in separator = ");
+	  exit(1);
+	}
+	TString opt = arg(0,2);
+	TString value = arg(3,arg.Length());
+	if(opt=="-P")
+	{
+         port=value.Atoi();
+	}
+	if(opt=="-S")
+	{
+	  if(!value.Contains(":"))
+	  {
+	  Error("rootwebshell","Bad command line parameter, master server arg dont have : and port");
+	  exit(1);	  
+	  }
+	server_master=value.Data();
+	}
+	if(opt=="-U")
+	{
+         uriPath=value.Data();
+	}
+
+	if(opt=="-O")
+	{
+         origin=value.Data();
+	}
+      }
 
     try {
         xmlrpc_c::registry registry;
@@ -42,15 +89,15 @@ int main(int argc,char ** argv) {
 	 
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
-	    .allowOrigin("http://localhost")
+	    .allowOrigin(origin.c_str())
             .registryP(&registry)
-            .portNumber(8082)
-	    .uriPath("/rootrpcshell"));
-// 	myAbyssServer.run();
+            .portNumber(port)
+	    .uriPath(uriPath.c_str()));
+	myAbyssServer.run();
 	
-	while(true){
-	  myAbyssServer.runOnce();	  
-	}
+// 	while(true){
+// 	  myAbyssServer.runOnce();	  
+// 	}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;

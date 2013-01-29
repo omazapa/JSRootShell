@@ -35,13 +35,13 @@ class TThread;
 class TXmlRpcWebServices:public xmlrpc_c::method
 {
   public:
-    TXmlRpcWebServices(int argc,char **argv,bool logging=true);
+    TXmlRpcWebServices(int argc,char **argv);
     ~TXmlRpcWebServices();
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
     
     void StartEngine(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
     void StopEngine(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
-    void StartEngineShell(xmlrpc_c::value *const  retvalP);
+    void StartEngineShell(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
     static void StartEngineShellThread(void *prt);
     
 private:
