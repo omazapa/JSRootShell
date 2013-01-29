@@ -162,8 +162,6 @@ function JSRootShell(rpcurl,id, style,logging)
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-      xmlhttp.setRequestHeader("Keep-Alive","timeout=150, max=100");
-      xmlhttp.setRequestHeader("Connection","keep-alive");
 //       xmlhttp.setRequestHeader("Content-Type","multipart/form-data");
       xmlhttp.upload.addEventListener("error", error, false);
       xmlhttp.send(msgxmltext);	
@@ -175,11 +173,11 @@ function JSRootShell(rpcurl,id, style,logging)
       xmlhttp.onreadystatechange = function(event) {
          if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
-           	var xmlrep =  xmlhttp.responseXML;
-		 console.log(xmlrep);
+                 var xmlrep =  xmlhttp.responseXML;
+                 console.log(xmlrep);
                  var canvases_names  = xmlrep.getElementsByTagName("member")[0];
                  var canvases_size   = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
-		 var errorcode       = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+                 var errorcode       = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
                  var pid             = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
                  var stderr          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
                  var stdout          = xmlrep.getElementsByTagName("member")[5].childNodes[2].textContent;
@@ -242,7 +240,7 @@ function JSRootShell(rpcurl,id, style,logging)
 		  return 3;
 	    }
          } else {
-//	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };
       };
    };

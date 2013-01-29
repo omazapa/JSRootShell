@@ -35,6 +35,8 @@
 
 #include<map>
 
+#include"TXmlRpcSession.h"
+
 class TApplicationRemoteShell;
 
 class TXmlRpcShellEngineUser
@@ -44,8 +46,9 @@ private:
   std::string fSessionID;
   std::string fUser;
   TStdIOHandler ioHandler;
+  TXmlRpcUserSession::EAuthMethod fAuthMathod;  
 public:
-  TXmlRpcShellEngineUser(std::string user,std::string passwd);
+  TXmlRpcShellEngineUser(std::string user,std::string passwd,TXmlRpcUserSession::EAuthMethod authmethod=TXmlRpcUserSession::EAuthMethod::kDB);
   ~TXmlRpcShellEngineUser();
   bool IsValid();
   std::string GetSessionID();

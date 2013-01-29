@@ -14,9 +14,14 @@
 #include<TUUID.h>
 using namespace std;
 
-TXmlRpcShellEngineUser::TXmlRpcShellEngineUser(std::string user,std::string passwd)
+TXmlRpcShellEngineUser::TXmlRpcShellEngineUser(std::string user,std::string passwd,TXmlRpcUserSession::EAuthMethod authmethod)
 {
 fUser=user;
+if(authmethod==TXmlRpcUserSession::EAuthMethod::kDB)
+{
+  
+}
+
 fShell=new TApplicationRemoteShell(user.c_str(),passwd.c_str());
 if(IsValid())
 {
