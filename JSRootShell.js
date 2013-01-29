@@ -162,8 +162,9 @@ function JSRootShell(rpcurl,id, style,logging)
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
       xmlhttp.open("POST", rpcurl, true);
       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-      xmlhttp.setRequestHeader("Connection","close");
-      xmlhttp.setRequestHeader("Content-Type","multipart/form-data");
+      xmlhttp.setRequestHeader("Keep-Alive","timeout=150, max=100");
+      xmlhttp.setRequestHeader("Connection","keep-alive");
+//       xmlhttp.setRequestHeader("Content-Type","multipart/form-data");
       xmlhttp.upload.addEventListener("error", error, false);
       xmlhttp.send(msgxmltext);	
 
