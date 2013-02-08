@@ -38,37 +38,24 @@
 #include"TXmlRpcSession.h"
 
 class TApplicationRemoteShell;
+class TSQLServer;
 
-class TXmlRpcShellEngineUser
-{
-private:
-  TApplicationRemoteShell *fShell;
-  std::string fSessionID;
-  std::string fUser;
-  TStdIOHandler ioHandler;
-  TXmlRpcUserSession::EAuthMethod fAuthMathod;  
-public:
-  TXmlRpcShellEngineUser(std::string user,std::string passwd,TXmlRpcUserSession::EAuthMethod authmethod=TXmlRpcUserSession::EAuthMethod::kDB);
-  ~TXmlRpcShellEngineUser();
-  bool IsValid();
-  std::string GetSessionID();
-  void ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
-};
 
 class TXmlRpcShellEngine:public xmlrpc_c::method
 {
   public:
-    TXmlRpcShellEngine(int argc,char **argv,bool logging=true);
+    TXmlRpcShellEngine(std::string db,std::string dbuser,std::string dbpasswd);
     void ProcessLine(std::string user,std::string sessionid,std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
-    void Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP);
+    void Login(std::string user,std::string passwd,xmlrpc_c::value *  const  retvalP);
     void Logout(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     
-    
 private:
+  TSQLServer *fDb;
   TStdIOHandler ioHandler;
-  bool fLogging;
-  std::map<std::string,TXmlRpcShellEngineUser*> fUsersShell;
+  bool fStatus;
+  std::string fUser;
+  std::string fSessionID;
 };
 
 #endif

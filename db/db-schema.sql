@@ -9,7 +9,7 @@ SET PASSWORD FOR rootdbadmin = PASSWORD('rootdbadminpass');
 
 CREATE TABLE IF NOT EXISTS `rootweb`.`user` (
   `username` varchar(25) COLLATE utf8_bin NOT NULL,
-  `passwd` varchar(25) COLLATE utf8_bin NOT NULL,
+  `passwd` varchar(41) COLLATE utf8_bin NOT NULL,
   `names` text COLLATE utf8_bin NOT NULL,
   `lastnames` text COLLATE utf8_bin NOT NULL,
   `email` text COLLATE utf8_bin NOT NULL,

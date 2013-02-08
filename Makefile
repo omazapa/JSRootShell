@@ -1,5 +1,5 @@
-CXXFLAGS = -I/usr/include/root -I/opt/xmlrpc/include -I. -g -Wall
-LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -L/opt/xmlrpc/lib -lNet -lRint -lxmlrpc  -lxmlrpc++  -lxmlrpc_abyss  -lxmlrpc_client  -lxmlrpc_client++  -lxmlrpc_cpp  -lxmlrpc_packetsocket  -lxmlrpc_server  -lxmlrpc_server++  -lxmlrpc_server_abyss  -lxmlrpc_server_abyss++  -lxmlrpc_server_cgi  -lxmlrpc_server_cgi++  -lxmlrpc_server_pstream++  -lxmlrpc_util  -lxmlrpc_xmlparse  -lxmlrpc_xmltok -lpthread  
+CXXFLAGS = -I/usr/include/root -I/opt/xmlrpc/include -I. -g -Wall -I/usr/include/mysql
+LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -L/opt/xmlrpc/lib -lNet -lRMySQL -lRint -lxmlrpc  -lxmlrpc++  -lxmlrpc_abyss  -lxmlrpc_client  -lxmlrpc_client++  -lxmlrpc_cpp  -lxmlrpc_packetsocket  -lxmlrpc_server  -lxmlrpc_server++  -lxmlrpc_server_abyss  -lxmlrpc_server_abyss++  -lxmlrpc_server_cgi  -lxmlrpc_server_cgi++  -lxmlrpc_server_pstream++  -lxmlrpc_util  -lxmlrpc_xmlparse  -lxmlrpc_xmltok -lpthread  
 #-lxmlrpc++ -lxmlrpc_server++ -lxmlrpc_server++ -lxmlrpc_server_abyss++ -lxmlrpc_packetsocket -lxmlrpc_server_pstream++ -lxmlrpc_server_abyss++ -lpthread
 AR       = ar rcs
 SRCDIR   = rootweb

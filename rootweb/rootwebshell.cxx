@@ -38,14 +38,18 @@ int main(int argc,char ** argv)
     string server_master = "http://localhost:8081";
     string uriPath = "/rootrpcshell";
     string origin = "http://localhost";
+    string db = "mysql://localhost/rootweb";
+    string dbuser = "rootdbadmin";
+    string dbpass = "";
     
-    //options are -P=port -S=master server  -U=uriPath -O=origin(cross site authorization)
+    //options are -P=port -S=master server  -U=uriPath -O=origin(cross site authorization) -d=database -u=databaseuser -p=databasepass
       TString arg;
       for(int i=1;i<argc;i++)
       {
 	arg=argv[i];
-	if(arg(2,2)!="=")
+	if(arg[2] != '=')
 	{
+	  cout<<arg[2]<<endl;
 	  Error("rootwebshell","Bad command line parameter in separator = ");
 	  exit(1);
 	}
@@ -73,6 +77,23 @@ int main(int argc,char ** argv)
 	{
          origin=value.Data();
 	}
+	
+	if(opt=="-d")
+	{
+         db=value.Data();
+	}
+	
+	if(opt=="-p")
+	{
+         dbpass=value.Data();
+	 Info("rootwebshell","|%s|",dbpass.c_str());
+	}
+
+	if(opt=="-u")
+	{
+         dbuser=value.Data();
+	}
+	
       }
 
     try {
@@ -82,11 +103,11 @@ int main(int argc,char ** argv)
 	registry.setDialect(xmlrpc_dialect_apache);
 
 
-        xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(argc,argv,true));
+        xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(db,dbuser,dbpass));
 
         registry.addMethod("ShellEngine", ShellEngineP);
         
-	 
+	gDebug=true;
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
 	    .allowOrigin(origin.c_str())

@@ -8,6 +8,6 @@ INSERT INTO  `rootweb`.`user` (
 `enabled`
 )
 
-VALUES ('demo', PASSWORD(  'demo' ) ,  'ROOT Web Shell Interface Demo User',  'ROOT Web Services',  'andresete.chaos@gmail.com',  'shell', 'true')
+VALUES ('demo', PASSWORD(  'demo' ) ,  'ROOT Web Shell Interface Demo User',  'ROOT Web Services',  'andresete.chaos@gmail.com',  'shell', true)
  
 
