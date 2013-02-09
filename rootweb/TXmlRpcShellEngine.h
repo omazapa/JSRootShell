@@ -35,8 +35,6 @@
 
 #include<map>
 
-#include"TXmlRpcSession.h"
-
 class TApplicationRemoteShell;
 class TSQLServer;
 
@@ -52,6 +50,7 @@ class TXmlRpcShellEngine:public xmlrpc_c::method
     
 private:
   TSQLServer *fDb;
+protected:  
   TStdIOHandler ioHandler;
   bool fStatus;
   std::string fUser;

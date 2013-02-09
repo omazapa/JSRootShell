@@ -19,55 +19,7 @@
 using namespace std;
 
 
-// if(fStatus)
-// {
-// TString token(user);
-// token+=gRandom->Integer(1e8);
-// fSessionID=TUUID(token.Data()).AsString();
-// }
 
-
-// void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP)
-// {
-//     Int_t canvases_size;
-//     Int_t errorcode;
-//     std::vector<xmlrpc_c::value> canvases_names;
-//     bool userdir=gSystem->cd(fUser.c_str());
-//     ioHandler.clear();
-//     ioHandler.InitCapture();
-//      TRY {
-//            gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
-//          } CATCH(excode) {
-//            Throw(excode);
-//          } ENDTRY;
-//     ioHandler.EndCapture();
-// 
-//     canvases_size=gROOT->GetListOfCanvases()->GetSize();
-//     for(Int_t i=0;i<canvases_size;i++)
-//     {
-//       TCanvas *c=(TCanvas*)gROOT->GetListOfCanvases()->At(i);
-//       canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
-//     }
-//     gROOT->GetListOfCanvases()->Print(".png");
-//     if(userdir) gSystem->cd("..");
-//     std::map<std::string, xmlrpc_c::value> result;
-//     
-//     std::pair<string, xmlrpc_c::value> errorcodem("errorcode", xmlrpc_c::value_int(errorcode));
-//     std::pair<string, xmlrpc_c::value> promptidm("promptid", xmlrpc_c::value_string(promptid));
-//     std::pair<string, xmlrpc_c::value> stdoutm("stdout", xmlrpc_c::value_string(ioHandler.getStdout()));
-//     std::pair<string, xmlrpc_c::value> stderrm("stderr", xmlrpc_c::value_string(ioHandler.getStderr()));
-//     std::pair<string, xmlrpc_c::value> canvases_sizem("canvases_size", xmlrpc_c::value_int(canvases_size));
-//     std::pair<string, xmlrpc_c::value> canvases_namesm("canvases_names",xmlrpc_c::value_array(canvases_names));
-//     
-//     result.insert(canvases_namesm);
-//     result.insert(canvases_sizem);
-//     result.insert(errorcodem);
-//     result.insert(promptidm);
-//     result.insert(stderrm);
-//     result.insert(stdoutm);
-//     
-//     *retvalP = xmlrpc_c::value_struct(result);
-// }
 
 TXmlRpcShellEngine::TXmlRpcShellEngine(string db,string dbuser,string dbpasswd)
 {
@@ -151,10 +103,10 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
 
 void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP)
 {
+ fStatus=false;
+ fUser=user; 
  ioHandler.clear();
  ioHandler.InitCapture();
- fStatus=false;
- this->fUser=user;
  if(fDb->IsConnected())
  {
   TSQLResult *result=fDb->Query(("select names,lastnames,email,services,enabled from rootweb.user where username='"+user+"' and passwd=PASSWORD('"+passwd+"');").c_str());
@@ -169,16 +121,16 @@ void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::val
  }else{
    Error("TXmlRpcShellEngineUser","Database's connection is closed");
  }
+ ioHandler.EndCapture();
  if(fStatus)
   {
     TString token(user);
-//     token+=gRandom->Integer(1e8);
     token+=gRandom->Uniform();
-    Info("TXmlRpcShellEngine::Login",token.Data());
+//     Info("TXmlRpcShellEngine::Login",token.Data());
     fSessionID=TUUID(token.Data()).AsString();
   }
 
- ioHandler.EndCapture();
+
  std::map<std::string, xmlrpc_c::value> result;
  std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(fStatus));
  std::pair<string, xmlrpc_c::value> sessionidm("sessionid", xmlrpc_c::value_string(fSessionID));
@@ -192,7 +144,8 @@ void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::val
  gSystem->mkdir(tuser.Data());
  gSystem->cd(fUser.c_str());
  }
- *retvalP=xmlrpc_c::value_struct(result); 
+ *retvalP=xmlrpc_c::value_struct(result);
+ Info("TXmlRpcShellEngine::Login","fUser=%s  fSessionID=%s",fUser.c_str(),fSessionID.c_str());
 }
 
 void TXmlRpcShellEngine::Logout(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP)
@@ -229,9 +182,9 @@ result.insert(messagem);
 void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string promptid,string code,xmlrpc_c::value *   const  retvalP)
 {
 //if user found
-Info("USERS","in %s out %s",user.c_str(),fUser.c_str());
-Info("SESSID","%s %s",sessionid.c_str(),fSessionID.c_str());
-if(user == fUser)
+Info("USERS","in %s ex %s",user.c_str(),fUser.c_str());
+Info("SESSID","in %s ex %s",sessionid.c_str(),fSessionID.c_str());
+if(fUser == user)
 {
   Info("HERE","%d",__LINE__);
   //validating token id 

@@ -98,7 +98,7 @@ int main(int argc,char ** argv)
 
     try {
         xmlrpc_c::registry registry;
-	registry.disableIntrospection();
+// 	registry.disableIntrospection();
 	
 	registry.setDialect(xmlrpc_dialect_apache);
 
@@ -114,11 +114,11 @@ int main(int argc,char ** argv)
             .registryP(&registry)
             .portNumber(port)
 	    .uriPath(uriPath.c_str()));
-	myAbyssServer.run();
+// 	myAbyssServer.run();
 	
-// 	while(true){
-// 	  myAbyssServer.runOnce();	  
-// 	}
+	while(true){
+	  myAbyssServer.runOnce();	  
+	}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;

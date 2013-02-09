@@ -1,0 +1,3 @@
+rootwebshell  =>  xmlrpc http://localhost:8082/rootrpcshell ShellEngine  "Login" "omazapa@localhost" "passwordhere" 
+                  xmlrpc http://localhost:8082/rootrpcshell ShellEngine  "ProcessLine" "omazapa@localhost" "01e748a0-0001-0000-a000-f0ff08000000" "p1" "cout<<123<<endl;"
+rootweb       =>  xmlrpc http://localhost:8081/rootrpcadmin ServiceRequest StartEngine Shell omazapa@localhost password
