@@ -35,7 +35,7 @@ using namespace std;
 int main(int argc,char ** argv)
 {
     int port=8082;
-    string server_master = "http://localhost:8081";
+    string server_master = "http://localhost:8082";
     string uriPath = "/rootrpcshell";
     string origin = "http://localhost";
     string db = "mysql://localhost/rootweb";

@@ -26,11 +26,16 @@ using namespace std;
 bool TXmlRpcWebServices::gShellStarted=false;
 TStdIOHandler TXmlRpcWebServices::ioHandler;
 
-TXmlRpcWebServices::TXmlRpcWebServices(int argc,char **argv)
+TXmlRpcWebServices::TXmlRpcWebServices(std::string db,std::string dbuser,std::string dbpass,std::string origin,int port)
 {
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
   this->_help = "This method process services engines";
+  fDb=db;
+  fDbUser=dbuser;
+  fDbPass=dbpass;
+  fOrigin=origin;
 }
+
 TXmlRpcWebServices::~TXmlRpcWebServices(){if(fShellThread) delete fShellThread;}
 
 void TXmlRpcWebServices::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP)
@@ -91,8 +96,8 @@ void TXmlRpcWebServices::StopEngine(xmlrpc_c::paramList const& paramList,xmlrpc_
   string engine=paramList.getString(1);
   if(engine=="Shell")
   {
-    if(fLogging)cout<<"                  : paramList String Engine:       "<<engine<<endl; 
-    StartEngineShell(paramList,retvalP);
+    if(gDebug)cout<<"                  : paramList String Engine:       "<<engine<<endl; 
+//     StartEngineShell(paramList,retvalP);
   }
   
 }
@@ -101,36 +106,37 @@ void TXmlRpcWebServices::StopEngine(xmlrpc_c::paramList const& paramList,xmlrpc_
 
 void TXmlRpcWebServices::StartEngineShell(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP)
 {
-  list<string> params;
   string username = paramList.getString(2);
-  
-  TString sessionid(username);
-  sessionid += gRandom->Integer(1e9);
-  sessionid = TUUID(sessionid.Data()).AsString();
-    
   string passwd      = paramList.getString(3);
   string port        = paramList.getString(4);
   string auth_method = paramList.getString(5);
-  params.push_back(username);
-  params.push_back(passwd);
-  params.push_back(sessionid.Data());
-  params.push_back(port);
-  params.push_back(auth_method);
   
   
   if(gDebug>0){
     cout<<"                  : paramList String Username:        "<<username<<endl;
-    cout<<"                  : paramList String SessionID:       "<<sessionid.Data()<<endl;
     cout<<"                  : paramList String Port:            "<<port<<endl;
   }
   
-  fShellThread=new TThread("Shell",StartEngineShellThread,(void*)&params);
-  if(fShellThread->Run())
-  {
+   ioHandler.clear();
+   ioHandler.InitCapture();
+   int tries=0;
+   bool status=false;
+   int pid=fork();
+   int port=gRandom->Integer(56000);
+   if(pid==0)
+   {
+    gSystem->Exec(TString::Format("./rootwebshell -d=%s -u=%s -p=%s -P=%d",fDb,fDbUser,fDbPass,port).Data());  
+   }else if(pid>0)
+   {
+    sleep(1);
     
-  } else{
-    cout<<"Thread not started"<<endl;
-  }
+   }
+   
+   ioHandler.EndCapture();
+   cout<<"stderr = "<<ioHandler.getStderr()<<endl;
+   cout<<"stdout = "<<ioHandler.getStdout()<<endl;
+
+  
 }
 
 
@@ -155,16 +161,11 @@ void TXmlRpcWebServices::StartEngineShellThread(void *prt)
     cout<<"                  : paramList String Port:            "<<port<<endl;
     cout<<"                  : paramList String Auth Method:     "<<auth_method<<endl;
    }
- ioHandler.clear();
- ioHandler.InitCapture();
  //paramiters -u=user -p=passwd -s=sessionid -P=port -a=authetication method
- gShellStarted=gSystem->Exec(("./rootwebshell -u="+username+" -p="+passwd+" -s="+sessionid+" -P="+port+" -a="+auth_method).c_str());
+//  gShellStarted=gSystem->Exec(("./rootwebshell -d="+fDb+" -u="+fDbUser+" -p="+fDbPass).c_str());
  if(gShellStarted){
    
  }
- ioHandler.EndCapture();
- cout<<"stderr = "<<ioHandler.getStderr()<<endl;
- cout<<"stdout = "<<ioHandler.getStdout()<<endl;
 }
 
 

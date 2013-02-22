@@ -29,13 +29,14 @@
 
 #include <xmlrpc-c/base.hpp>
 #include <xmlrpc-c/registry.hpp>
+#include <xmlrpc-c/client_simple.hpp>
 #include "TStdIOHandler.h"
 class TThread;
 
 class TXmlRpcWebServices:public xmlrpc_c::method
 {
   public:
-    TXmlRpcWebServices(int argc,char **argv);
+    TXmlRpcWebServices(std::string db,std::string dbuser,std::string dbpass,std::string origin,int port);
     ~TXmlRpcWebServices();
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *const  retvalP);
     
@@ -45,10 +46,14 @@ class TXmlRpcWebServices:public xmlrpc_c::method
     static void StartEngineShellThread(void *prt);
     
 private:
-  bool fLogging;
+  std::string fDb;
+  std::string fDbUser;
+  std::string fDbPass;
+  std::string fOrigin;
   TThread *fShellThread;
   static bool gShellStarted;
   static TStdIOHandler ioHandler;
+  xmlrpc_c::clientSimple myClient;
 };
 
 #endif
