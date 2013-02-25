@@ -17,6 +17,7 @@
 #include<sstream>
 #include<iostream>
 #include<fstream>
+#include <list>
 
 
 extern "C"
@@ -28,12 +29,16 @@ extern "C"
 #include<fcntl.h>
 }
 
+extern std::list<std::string>  gStdout;
+extern std::list<std::string>  gStderr;
+extern bool 	          gCapturing;
 #define MAX_LEN 40
 class TStdIOHandler
 {
 public:
   TStdIOHandler(){
-  capturing=false;  
+  capturing=false;
+  gCapturing=false;
   }
   void InitCapture()
   {
@@ -65,6 +70,7 @@ public:
       
       
       capturing = true;
+      gCapturing = true;
     }
   }
   
@@ -81,6 +87,7 @@ public:
 	buf_readed = read(stdout_pipe[0], buffer, MAX_LEN);
 	if(buf_readed<=0) break;
 	stdoutpipe += buffer;
+	gStdout.push_back(buffer);
 	memset(buffer,0,MAX_LEN+1);
       }
 
@@ -89,12 +96,14 @@ public:
 	buf_readed = read(stderr_pipe[0], buffer, MAX_LEN);
 	if(buf_readed<=0) break;
 	stderrpipe += buffer;
+	gStderr.push_back(buffer);
 	memset(buffer,0,MAX_LEN+1);
       }
 
       dup2(saved_stdout, STDOUT_FILENO);  /* reconnect stdout*/
       dup2(saved_stderr, STDERR_FILENO);  /* reconnect stderr*/
       capturing = false;
+      gCapturing= false;
     }
   }
   

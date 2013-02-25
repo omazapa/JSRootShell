@@ -43,14 +43,21 @@ int main(int argc,char ** argv) {
         xmlrpc_c::serverAbyss myAbyssServer(
             xmlrpc_c::serverAbyss::constrOpt()
 	    .allowOrigin("http://localhost")
+// 	    .chunkResponse(true)
             .registryP(&registry)
             .portNumber(8082)
+// 	    .keepaliveTimeout(3600)
+// 	    .timeout(3600)
+// 	    .accessCtlMaxAge(3600)
+// 	    .keepaliveMaxConn(10)
+// 	    .serverOwnsSignals(false)
+// 	    .expectSigchld(true)
 	    .uriPath("/rootrpcshell"));
-// 	myAbyssServer.run();
-	
-	while(true){
-	  myAbyssServer.runOnce();	  
-	}
+	std::cout<<"Server Started"<<std::endl;
+	myAbyssServer.run();
+// 	while(true){
+// 	  myAbyssServer.runOnce();	  
+// 	}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;

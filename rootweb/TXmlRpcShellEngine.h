@@ -35,12 +35,12 @@
 
 #include<map>
 
-class TApplicationRemoteShell;
+class TROOT;
 
 class TXmlRpcShellEngineUser
 {
 private:
-  TApplicationRemoteShell *fShell;
+  TROOT *fShell;
   std::string fSessionID;
   std::string fUser;
   TStdIOHandler ioHandler;
@@ -59,8 +59,11 @@ class TXmlRpcShellEngine:public xmlrpc_c::method
     void ProcessLine(std::string user,std::string sessionid,std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
     void Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP);
     void Logout(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP);
+    void Output(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP);
+    void Interrupt(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     
+//     void execute(xmlrpc_c::paramList const& paramList,const xmlrpc_c::callInfo * const  callInfoP,xmlrpc_c::value *const resultP);
     
 private:
   TStdIOHandler ioHandler;

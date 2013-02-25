@@ -78,6 +78,7 @@ function JSRootPrompt(number, shell)
          {           
                if(shell.sendRequest()!=0)
 	       {
+		 shell.sendRequestOutput( "JSRootPrompt" + number);
                  shell.newPrompt(); 
 	       }	 
          }

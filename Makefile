@@ -4,7 +4,7 @@ LDFLAGS  =  -L/usr/lib/x86_64-linux-gnu -L/opt/xmlrpc/lib -lNet -lRint -lxmlrpc 
 AR       = ar rcs
 SRCDIR   = rootweb
 
-all:$(SRCDIR)/rootwebshell $(SRCDIR)/rootweb
+all:$(SRCDIR)/rootwebshell
 
 $(SRCDIR)/rootwebshell: $(SRCDIR)/rootwebshell.cxx $(SRCDIR)/TXmlRpcShellEngine.cxx $(SRCDIR)/TApplicationRemoteShell.cxx $(SRCDIR)/TXmlRpcShellEngine.h
 	$(CXX) $(CXXFLAGS) $< $(SRCDIR)/TXmlRpcShellEngine.cxx $(SRCDIR)/TApplicationRemoteShell.cxx -o $@ $(LDFLAGS) 
@@ -23,5 +23,5 @@ run:runwebshell
 	
 runwebshell: $(SRCDIR)/rootwebshell
 	LD_LIBRARY_PATH=/opt/xmlrpc/lib/ ./$<
-runweb:$(SRCDIR)/rootweb
-	LD_LIBRARY_PATH=/opt/xmlrpc/lib/ ./$<
+# runweb:$(SRCDIR)/rootweb
+# 	LD_LIBRARY_PATH=/opt/xmlrpc/lib/ ./$<

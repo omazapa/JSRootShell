@@ -129,6 +129,62 @@ function JSRootShell(rpcurl,id, style,logging)
 	  return;
   }  
 
+  this.sendRequestOutput = function(promptid) {
+    if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+       } else {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+       }
+       //initialization of xml message
+       //request types are processline, tabcompletion, history up/down
+       var msg_dom = document.implementation.createDocument(null, "methodCall",null);
+       
+       var methodcalltag    = msg_dom.getElementsByTagName("methodCall")[0];
+       
+       var methodnametag    = msg_dom.createElement("methodName");
+       methodnametag.appendChild(msg_dom.createTextNode("ShellEngine"));
+       methodcalltag.appendChild(methodnametag);
+       
+       
+       var paramstag    = msg_dom.createElement("params");
+       paramstag.appendChild(getXmlParam(msg_dom,"string","Output",null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",username,null));
+       paramstag.appendChild(getXmlParam(msg_dom,"string",sessionid,null));
+
+     
+       methodcalltag.appendChild(paramstag);
+
+      var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
+      xmlhttp.open("POST", rpcurl, true);
+      xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+      xmlhttp.upload.addEventListener("error", error, false);
+      xmlhttp.send(msgxmltext);	
+      xmlhttp.onreadystatechange = function(event) {
+        if (xmlhttp.readyState == 4) {
+            if (xmlhttp.status == 200) {
+           	var xmlrep =  xmlhttp.responseXML;
+		 console.log(xmlrep);
+		 var capturing          = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
+		 var stderr             = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
+                 var stdout             = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+                 
+		 var prompt = document.getElementById(promptid);
+                 if(stdout){
+                    if(stdout.trim().length != 0){
+                        prompt.value += '\n'+stdout;
+                     } 
+                 }
+                 
+ 	        if(stderr) {
+                    if(stderr.trim().length != 0){
+                    prompt.value += '\n'+stderr;
+                     }
+                 }
+		  return capturing;
+	    }
+	}
+      }
+  }
    this.sendRequest = function() {
 
       var code = this.currentPrompt.getCode();
@@ -174,12 +230,19 @@ function JSRootShell(rpcurl,id, style,logging)
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
 		 console.log(xmlrep);
+		 try{
                  var canvases_names  = xmlrep.getElementsByTagName("member")[0];
                  var canvases_size   = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
 		 var errorcode       = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
                  var pid             = xmlrep.getElementsByTagName("member")[3].childNodes[2].textContent;
                  var stderr          = xmlrep.getElementsByTagName("member")[4].childNodes[2].textContent;
                  var stdout          = xmlrep.getElementsByTagName("member")[5].childNodes[2].textContent;
+		   
+		}catch(e)
+		{
+		  console.log("Exception captured:\n"+e);
+		  console.log("Xml Response:\n"+xmlrep);
+		}
                  
                  var prompt = document.getElementById(promptid);
                  
@@ -241,6 +304,11 @@ function JSRootShell(rpcurl,id, style,logging)
          } else {
 //	   console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
          };
+	 if (xmlhttp.readyState == 3) {
+	   var xmlrep =  xmlhttp.responseXML;
+           console.log("statusText: " + xmlhttp.statusText + "\nHTTP status code: " + xmlhttp.status);
+	   console.log(xmlrep);
+	 };
       };
    };
 };
