@@ -49,7 +49,7 @@ int main(int argc,char ** argv) {
 // 	    .keepaliveTimeout(3600)
 // 	    .timeout(3600)
 // 	    .accessCtlMaxAge(3600)
-// 	    .keepaliveMaxConn(10)
+	    .keepaliveMaxConn(-1)//este parametro es supor importante para que no se creen multiples instancias y se pierdan las variables globales.
 // 	    .serverOwnsSignals(false)
 // 	    .expectSigchld(true)
 	    .uriPath("/rootrpcshell"));
