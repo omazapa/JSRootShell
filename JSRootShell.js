@@ -163,10 +163,15 @@ function JSRootShell(rpcurl,id, style,logging)
         if (xmlhttp.readyState == 4) {
             if (xmlhttp.status == 200) {
            	var xmlrep =  xmlhttp.responseXML;
-		 console.log(xmlrep);
 		 var capturing          = xmlrep.getElementsByTagName("member")[0].childNodes[2].textContent;
 		 var stderr             = xmlrep.getElementsByTagName("member")[1].childNodes[2].textContent;
                  var stdout             = xmlrep.getElementsByTagName("member")[2].childNodes[2].textContent;
+		 if(logging){
+                   console.log(xmlrep);  
+                   console.log("capturing:"+capturing);                   
+                   console.log("stdout:"+stdout);
+                   console.log("stderr:"+stderr);
+                  }
                  
 		 var prompt = document.getElementById(promptid);
                  if(stdout){
@@ -174,12 +179,12 @@ function JSRootShell(rpcurl,id, style,logging)
                         prompt.value += '\n'+stdout;
                      } 
                  }
-                 
  	        if(stderr) {
                     if(stderr.trim().length != 0){
                     prompt.value += '\n'+stderr;
                      }
                  }
+                 prompt.style.height = prompt.scrollHeight + 'px';
 		  return capturing;
 	    }
 	}
@@ -216,7 +221,7 @@ function JSRootShell(rpcurl,id, style,logging)
        methodcalltag.appendChild(paramstag);
 
       var msgxmltext = new XMLSerializer().serializeToString(msg_dom);
-      xmlhttp.open("POST", rpcurl, true);
+      xmlhttp.open("POST", rpcurl, false);
       xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
       xmlhttp.upload.addEventListener("error", error, false);
       xmlhttp.send(msgxmltext);	

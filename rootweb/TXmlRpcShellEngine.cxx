@@ -218,6 +218,7 @@ void TXmlRpcShellEngine::Output(std::string user,std::string sessionid,xmlrpc_c:
   std::pair<string, xmlrpc_c::value> capturing("capturing", xmlrpc_c::value_boolean(gCapturing));
   std::string stdout_m;
   std::string stderr_m;
+//   sleep(10);
 //   if(gCapturing)
 //   {
     int size=gStdout.size();
