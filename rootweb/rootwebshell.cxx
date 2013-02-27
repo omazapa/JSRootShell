@@ -49,9 +49,9 @@ int main(int argc,char ** argv) {
 // 	    .keepaliveTimeout(3600)
 // 	    .timeout(3600)
 // 	    .accessCtlMaxAge(3600)
-	    .keepaliveMaxConn(-1)//este parametro es supor importante para que no se creen multiples instancias y se pierdan las variables globales.
-// 	    .serverOwnsSignals(false)
-// 	    .expectSigchld(true)
+	    .keepaliveMaxConn(1e9)//este parametro es supor importante para que no se creen multiples instancias y se pierdan las variables globales.
+	    .serverOwnsSignals(false)//this is the configutation .serverOwnsSignals(false) .expectSigchld(true) to captured our own signal
+	    .expectSigchld(true)
 	    .uriPath("/rootrpcshell"));
 	std::cout<<"Server Started"<<std::endl;
 	myAbyssServer.run();

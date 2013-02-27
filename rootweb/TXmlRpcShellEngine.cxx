@@ -25,88 +25,12 @@ bool 	           gCapturing=false;
 void signal_callback_handler_int(int signum)
 {
   cout<<"Captured Interrupt"<<endl;
-  if(gROOT->IsLineProcessing()){
-    gROOT->SetInterrupt(true);
-  } 
+//   if(gROOT->IsLineProcessing()){
+//     gROOT->SetInterrupt(true);
+//   } 
+//   gROOT->SetInterrupt(true);
+//   gApplication->HandleException(2);
   //gROOT->SetInterrupt(true);
-}
-
-TXmlRpcShellEngineUser::TXmlRpcShellEngineUser(std::string user,std::string passwd)
-{
-fUser=user;
-fShell=gROOT;
-// if(IsValid())
-// {
-TString token(user);
-token+=gRandom->Integer(1e8);
-fSessionID=TUUID(token.Data()).AsString();
-// }
-}
-
-
-
-TXmlRpcShellEngineUser::~TXmlRpcShellEngineUser()
-{
-    delete fShell;
-}
-
-bool TXmlRpcShellEngineUser::IsValid()
-{
-return true;//fShell->IsValid(); 
-}
-
-std::string TXmlRpcShellEngineUser::GetSessionID()
-{
-    return fSessionID;
-}
-
-void TXmlRpcShellEngineUser::ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP)
-{
-    Int_t canvases_size;
-    Int_t errorcode;
-    std::vector<xmlrpc_c::value> canvases_names;
-//     gROOT->SetApplication(fShell);
-//     bool userdir=gSystem->cd(fUser.c_str());
-//     ioHandler.clear();
-// //     ioHandler.InitCapture();
-//     gROOT->SetLineIsProcessing();
-     TRY {
-	   gROOT->SetLineIsProcessing();
-           gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
-         } CATCH(excode) {
-           Throw(excode);
-         } ENDTRY;
-// 	 
-	 
-//     ioHandler.EndCapture();
-
-    canvases_size=gROOT->GetListOfCanvases()->GetSize();
-    for(Int_t i=0;i<canvases_size;i++)
-    {
-      TCanvas *c=(TCanvas*)gROOT->GetListOfCanvases()->At(i);
-      canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
-    }
-    gROOT->GetListOfCanvases()->Print(".png");
-//     if(userdir) gSystem->cd("..");
-    std::map<std::string, xmlrpc_c::value> result;
-    
-    std::pair<string, xmlrpc_c::value> errorcodem("errorcode", xmlrpc_c::value_int(errorcode));
-    std::pair<string, xmlrpc_c::value> promptidm("promptid", xmlrpc_c::value_string(promptid));
-//     std::pair<string, xmlrpc_c::value> stdoutm("stdout", xmlrpc_c::value_string(ioHandler.getStdout()));
-//     std::pair<string, xmlrpc_c::value> stderrm("stderr", xmlrpc_c::value_string(ioHandler.getStderr()));
-        std::pair<string, xmlrpc_c::value> stdoutm("stdout", xmlrpc_c::value_string(""));
-    std::pair<string, xmlrpc_c::value> stderrm("stderr", xmlrpc_c::value_string(""));
-    std::pair<string, xmlrpc_c::value> canvases_sizem("canvases_size", xmlrpc_c::value_int(canvases_size));
-    std::pair<string, xmlrpc_c::value> canvases_namesm("canvases_names",xmlrpc_c::value_array(canvases_names));
-    
-    result.insert(canvases_namesm);
-    result.insert(canvases_sizem);
-    result.insert(errorcodem);
-    result.insert(promptidm);
-    result.insert(stderrm);
-    result.insert(stdoutm);
-    
-    *retvalP = xmlrpc_c::value_struct(result);
 }
 
 TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
@@ -201,11 +125,17 @@ void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::
 void TXmlRpcShellEngine::Interrupt(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP)
 {
   
-  if(gROOT->IsLineProcessing())
-  {
-    gROOT->SetInterrupt();
-  }
-*retvalP=xmlrpc_c::value_boolean(gROOT->IsInterrupted()); 
+//   if(gROOT->IsLineProcessing())
+//   {
+//     cout<<"Interrupt while IsLineProcessing\n;";
+//     gROOT->SetInterrupt();
+//   }
+cout<<"Interrupt pid = "<<getpid()<<endl;
+cout<<"Interrupt while IsLineProcessing\n;";
+//       gROOT->SetInterrupt();
+       kill(17,getpid());
+      gApplication->HandleException(2);
+*retvalP=xmlrpc_c::value_boolean(true); 
 }
 
 // void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,const xmlrpc_c::callInfo * const  callInfoP,xmlrpc_c::value *const resultP)
@@ -248,25 +178,12 @@ void TXmlRpcShellEngine::Output(std::string user,std::string sessionid,xmlrpc_c:
 
 void TXmlRpcShellEngine::Login(std::string user,std::string passwd,xmlrpc_c::value *   const  retvalP)
 {
- ioHandler.clear();
- ioHandler.InitCapture();
- TXmlRpcShellEngineUser *euser=new TXmlRpcShellEngineUser(user,passwd);
- ioHandler.EndCapture();
  std::map<std::string, xmlrpc_c::value> result;
- std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(euser->IsValid()));
- std::pair<string, xmlrpc_c::value> sessionidm("sessionid", xmlrpc_c::value_string(euser->GetSessionID().c_str()));
+ std::pair<string, xmlrpc_c::value> statusm("status", xmlrpc_c::value_boolean(true));
+ std::pair<string, xmlrpc_c::value> sessionidm("sessionid", xmlrpc_c::value_string("sid"));
  
  result.insert(statusm);
  result.insert(sessionidm);
- if(euser->IsValid())
- {
- fUsersShell[user]=euser;
- TString tuser(user);
- tuser.ReplaceAll("@","-");
- gSystem->mkdir(tuser.Data());
- }else{
- delete euser;
-}
  *retvalP=xmlrpc_c::value_struct(result); 
 }
 
@@ -279,24 +196,8 @@ std::pair<string, xmlrpc_c::value> messagem;
 statusm.first="status";
 messagem.first = "message";
 
-if(fUsersShell.find(user) != fUsersShell.end())
-{
-  //validating token id 
-  if(fUsersShell[user]->GetSessionID() == sessionid)
-  {
-    fUsersShell.erase(user);
-    statusm.second = xmlrpc_c::value_boolean(true);
-
-    messagem.second = xmlrpc_c::value_string("User logged out");
-  }else{
-    statusm.second = xmlrpc_c::value_boolean(false);
-    messagem.second = xmlrpc_c::value_string("Error: bad session id");
-  }
-}else{
-    statusm.second = xmlrpc_c::value_boolean(false);
-    messagem.second = xmlrpc_c::value_string("Error: user not found");
-}
-
+statusm.second = xmlrpc_c::value_boolean(true);
+messagem.second = xmlrpc_c::value_string("User logged out");
 result.insert(statusm);
 result.insert(messagem);
 *retvalP=xmlrpc_c::value_struct(result);
@@ -304,11 +205,11 @@ result.insert(messagem);
 
 void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string promptid,string code,xmlrpc_c::value *   const  retvalP)
 {
+  
+    cout<<"ProcessLine pid = "<<getpid()<<endl;
     Int_t canvases_size;
     Int_t errorcode;
     std::vector<xmlrpc_c::value> canvases_names;
-//     gROOT->SetApplication(fShell);
-//     bool userdir=gSystem->cd(fUser.c_str());
     ioHandler.clear();
     ioHandler.InitCapture();
     gROOT->SetLineIsProcessing();
@@ -329,7 +230,6 @@ void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string prompti
       canvases_names.push_back(xmlrpc_c::value_string(c->GetName()));
     }
     gROOT->GetListOfCanvases()->Print(".png");
-//     if(userdir) gSystem->cd("..");
     std::map<std::string, xmlrpc_c::value> result;
     
     std::pair<string, xmlrpc_c::value> errorcodem("errorcode", xmlrpc_c::value_int(errorcode));
@@ -349,5 +249,4 @@ void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string prompti
     result.insert(stdoutm);
     
     *retvalP = xmlrpc_c::value_struct(result);
-
 }

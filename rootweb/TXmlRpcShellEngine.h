@@ -36,22 +36,6 @@
 #include<map>
 
 class TROOT;
-
-class TXmlRpcShellEngineUser
-{
-private:
-  TROOT *fShell;
-  std::string fSessionID;
-  std::string fUser;
-  TStdIOHandler ioHandler;
-public:
-  TXmlRpcShellEngineUser(std::string user,std::string passwd);
-  ~TXmlRpcShellEngineUser();
-  bool IsValid();
-  std::string GetSessionID();
-  void ProcessLine(std::string promptid,std::string code,xmlrpc_c::value *   const  retvalP);
-};
-
 class TXmlRpcShellEngine:public xmlrpc_c::method
 {
   public:
@@ -68,7 +52,6 @@ class TXmlRpcShellEngine:public xmlrpc_c::method
 private:
   TStdIOHandler ioHandler;
   bool fLogging;
-  std::map<std::string,TXmlRpcShellEngineUser*> fUsersShell;
 };
 
 #endif
