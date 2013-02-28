@@ -47,11 +47,14 @@ class TXmlRpcShellEngine:public xmlrpc_c::method
     void Interrupt(std::string user,std::string sessionid,xmlrpc_c::value *   const  retvalP);
     void execute(xmlrpc_c::paramList const& paramList,xmlrpc_c::value *   const  retvalP);
     
+    
 //     void execute(xmlrpc_c::paramList const& paramList,const xmlrpc_c::callInfo * const  callInfoP,xmlrpc_c::value *const resultP);
     
 private:
   TStdIOHandler ioHandler;
   bool fLogging;
 };
+
+void InitInterruptHandler();
 
 #endif

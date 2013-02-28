@@ -15,6 +15,17 @@
 #include<signal.h>
 #include<list>
 #include<TROOT.h>
+#include<TInterpreter.h>
+#include<TSysEvtHandler.h>
+#include<TError.h>
+#include<Getline.h>
+
+#ifdef R__UNIX
+#include<signal.h>
+#endif
+
+R__EXTERN void *gMmallocDesc; //is used and set in TMapFile and TClass
+
 
 using namespace std;
 
@@ -22,16 +33,51 @@ std::list<string>  gStdout;
 std::list<string>  gStderr;
 bool 	           gCapturing=false;
 
-void signal_callback_handler_int(int signum)
+
+
+//----- Interrupt signal handler -----------------------------------------------
+//______________________________________________________________________________
+class TInterruptHandler : public TSignalHandler {
+public:
+   TInterruptHandler() : TSignalHandler(kSigInterrupt, kFALSE) { }
+   Bool_t  Notify();
+};
+
+//______________________________________________________________________________
+Bool_t TInterruptHandler::Notify()
 {
-  cout<<"Captured Interrupt"<<endl;
-//   if(gROOT->IsLineProcessing()){
-//     gROOT->SetInterrupt(true);
-//   } 
-//   gROOT->SetInterrupt(true);
-//   gApplication->HandleException(2);
-  //gROOT->SetInterrupt(true);
+   // TRint interrupt handler.
+
+   if (fDelay) {
+      fDelay++;
+      return kTRUE;
+   }
+
+   // make sure we use the sbrk heap (in case of mapped files)
+   gMmallocDesc = 0;
+
+   if (!gCint->GetSecurityError())
+      gCint->GenericError("\n *** Break *** keyboard interrupt");
+   else {
+      Break("TInterruptHandler::Notify", "keyboard interrupt");
+//       if (TROOT::Initialized()) {
+// //          Getlinem(kInit, "Root > ");
+//          gCint->RewindDictionary();
+// #ifndef WIN32
+//          Throw(GetSignal());
+// #endif
+//       }
+   }
+   return kTRUE;
 }
+
+void InitInterruptHandler()
+{
+   TInterruptHandler *ih = new TInterruptHandler();
+   ih->Add();
+   gSystem->AddSignalHandler(ih);  
+}
+
 
 TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
 {
@@ -39,10 +85,12 @@ TXmlRpcShellEngine::TXmlRpcShellEngine(int argc,char **argv,bool logging)
   this->_signature = "S:ss";  // method's arguments are two strings and return a Struct
   this->_help = "This method process c++ code using gROOT";
   gROOT->SetName("JSRootShell");
+  
+  
   if(gBenchmark==NULL){
     gBenchmark=new TBenchmark();
   }
-  signal(SIGINT, signal_callback_handler_int);
+//   signal(SIGINT, signal_callback_handler_int);
    gROOT->ProcessLineSync("#include <iostream>");
    gROOT->ProcessLineSync("#include <string>");
    gROOT->ProcessLineSync("#include <DllImport.h>");// Defined R__EXTERN
@@ -130,12 +178,12 @@ void TXmlRpcShellEngine::Interrupt(std::string user,std::string sessionid,xmlrpc
 //     cout<<"Interrupt while IsLineProcessing\n;";
 //     gROOT->SetInterrupt();
 //   }
-cout<<"Interrupt pid = "<<getpid()<<endl;
-cout<<"Interrupt while IsLineProcessing\n;";
-//       gROOT->SetInterrupt();
-       kill(17,getpid());
-      gApplication->HandleException(2);
-*retvalP=xmlrpc_c::value_boolean(true); 
+// cout<<"Interrupt pid = "<<getpid()<<endl;
+// cout<<"Interrupt while IsLineProcessing\n;";
+// //       gROOT->SetInterrupt();
+//        kill(17,getpid());
+//       gApplication->HandleException(2);
+// *retvalP=xmlrpc_c::value_boolean(true); 
 }
 
 // void TXmlRpcShellEngine::execute(xmlrpc_c::paramList const& paramList,const xmlrpc_c::callInfo * const  callInfoP,xmlrpc_c::value *const resultP)
@@ -214,8 +262,10 @@ void TXmlRpcShellEngine::ProcessLine(string user,string sessionid,string prompti
     ioHandler.InitCapture();
     gROOT->SetLineIsProcessing();
      TRY {
-	   gROOT->SetLineIsProcessing();
-           gROOT->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
+           gROOT->ProcessLineSync(TString(code.c_str()).ReplaceAll("\n","").Data(),&errorcode);
+// 	    	gApplication->ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),kTRUE,&errorcode);
+// 	  shell.ProcessLine(TString(code.c_str()).ReplaceAll("\n","").Data(),kFALSE,&errorcode);
+// 	  gInterpreter->ProcessLineSynch(TString(code.c_str()).ReplaceAll("\n","").Data(),(TInterpreter::EErrorCode*)&errorcode);
          } CATCH(excode) {
            Throw(excode);
          } ENDTRY;

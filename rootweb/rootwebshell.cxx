@@ -25,19 +25,22 @@ using namespace std;
 #include"TXmlRpcShellEngine.h"
 
 #include <unistd.h>
+#include <signal.h>
 
 int main(int argc,char ** argv) {
 
+    InitInterruptHandler();
     try {
         xmlrpc_c::registry registry;
-	registry.disableIntrospection();
+// 	registry.disableIntrospection();
 	
-	registry.setDialect(xmlrpc_dialect_apache);
+// 	registry.setDialect(xmlrpc_dialect_apache);
 
 
         xmlrpc_c::methodPtr const ShellEngineP(new TXmlRpcShellEngine(argc,argv,true));
 
         registry.addMethod("ShellEngine", ShellEngineP);
+	
         
 	 
         xmlrpc_c::serverAbyss myAbyssServer(
@@ -54,10 +57,29 @@ int main(int argc,char ** argv) {
 	    .expectSigchld(true)
 	    .uriPath("/rootrpcshell"));
 	std::cout<<"Server Started"<<std::endl;
-	myAbyssServer.run();
-// 	while(true){
-// 	  myAbyssServer.runOnce();	  
-// 	}
+// 	myAbyssServer.run();
+	while(true){
+// 	 pid_t childPID = fork();
+// 
+        myAbyssServer.runOnce();	  
+// 	   
+// 	if(childPID >= 0) // fork was successful
+//         {
+// 	    if(childPID == 0) // child process
+// 	    {
+//              myAbyssServer.runOnce();	  
+// 	    }
+// 	    else //Parent process
+//             {
+// 	       myAbyssServer.runOnce();	  
+//             }
+//         }
+//         else // fork failed
+//        {
+//         printf("\n Fork failed, quitting!!!!!!\n");
+//         return 1;
+//         }
+	}
         assert(false);
     } catch (exception const& e) {
         cerr << "Something failed.  " << e.what() << endl;
