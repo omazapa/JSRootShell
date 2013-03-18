@@ -47,10 +47,12 @@ public:
       /* save stdout/stderr for display later */
       saved_stdout = dup(STDOUT_FILENO);  
       saved_stderr = dup(STDERR_FILENO);  
-      if( pipe(stdout_pipe) != 0 ) {          /* make a pipe for stdout*/
+      if( pipe2(stdout_pipe, O_NONBLOCK )  != 0 ) {          /* make a pipe for stdout*/
+	 std::cerr<<"Error opening stdout \n";
          return;
       }
-      if( pipe(stderr_pipe) != 0 ) {          /* make a pipe for stdout*/
+      if( pipe2(stderr_pipe, O_NONBLOCK )  != 0 ) {          /* make a pipe for stdout*/
+	std::cerr<<"Error opening stderr \n";
          return;
       }
 
