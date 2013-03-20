@@ -31,14 +31,12 @@ extern "C"
 
 extern std::list<std::string>  gStdout;
 extern std::list<std::string>  gStderr;
-extern bool 	          gCapturing;
 #define MAX_LEN 40
 class TStdIOHandler
 {
 public:
   TStdIOHandler(){
   capturing=false;
-  gCapturing=false;
   }
   void InitCapture()
   {
@@ -72,7 +70,6 @@ public:
       
       
       capturing = true;
-      gCapturing = true;
     }
   }
   
@@ -105,7 +102,6 @@ public:
       dup2(saved_stdout, STDOUT_FILENO);  /* reconnect stdout*/
       dup2(saved_stderr, STDERR_FILENO);  /* reconnect stderr*/
       capturing = false;
-      gCapturing= false;
     }
   }
   
